@@ -3,8 +3,36 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>BillSnap — Every bill, written down properly.</title>
+<title>BillSnap — Offline Billing Software for Small Shops</title>
+
+<!-- SEO -->
+<meta name="description" content="BillSnap is free offline billing software for small shops. Create PDF invoices, track inventory, and see daily reports — no internet needed, no monthly fees, works on Windows 10 & 11.">
+<meta name="keywords" content="billing software, invoice software, offline billing, small shop billing, free billing software, inventory management, PDF invoice, Windows billing app">
+<meta name="author" content="BillSnap">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="https://billsnap.vercel.app/">
+
+<!-- Open Graph (WhatsApp, Facebook, LinkedIn previews) -->
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://billsnap.vercel.app/">
+<meta property="og:title" content="BillSnap — Free Offline Billing Software for Small Shops">
+<meta property="og:description" content="Create PDF invoices, track inventory, and see daily reports — all on your own PC. No internet. No monthly fees. Free forever.">
+<meta property="og:image" content="https://billsnap.vercel.app/og-image.png">
+<meta property="og:locale" content="en_IN">
+
+<!-- Twitter Card -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="BillSnap — Free Offline Billing for Small Shops">
+<meta name="twitter:description" content="PDF invoices, inventory tracking, daily reports. Works without internet. Free forever.">
+<meta name="twitter:image" content="https://billsnap.vercel.app/og-image.png">
+
+<!-- Favicon (inline SVG as data URI — no extra file needed) -->
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%23042C53'/><path d='M35 18C35 14.7 37.7 12 41 12H65C68.3 12 71 14.7 71 18V82L64.5 77.5L58 82L51.5 77.5L45 82L38.5 77.5L35 80V18Z' fill='white' opacity='.9'/><path d='M58 36L44 58H52L49 72L64 52H56L58 36Z' fill='%23FAC775'/></svg>">
+<link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%23042C53'/><path d='M35 18C35 14.7 37.7 12 41 12H65C68.3 12 71 14.7 71 18V82L64.5 77.5L58 82L51.5 77.5L45 82L38.5 77.5L35 80V18Z' fill='white' opacity='.9'/><path d='M58 36L44 58H52L49 72L64 52H56L58 36Z' fill='%23FAC775'/></svg>">
+
+<!-- Fonts with display swap for performance -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,300;1,9..144,400;1,9..144,500&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
 :root{
@@ -585,13 +613,164 @@ footer{
 .footer-logo-text{font-family:'Fraunces',serif;font-size:16px;font-weight:600;color:var(--page)}
 footer p{font-size:12.5px;color:rgba(247,249,252,.4)}
 
+/* MOBILE MENU */
+.hamburger{
+  display:none;flex-direction:column;gap:5px;
+  background:none;border:none;cursor:pointer;padding:6px;
+}
+.hamburger span{
+  width:22px;height:2px;background:var(--navy);
+  border-radius:2px;transition:transform .3s,opacity .3s;
+  display:block;
+}
+.hamburger.open span:nth-child(1){transform:translateY(7px) rotate(45deg)}
+.hamburger.open span:nth-child(2){opacity:0}
+.hamburger.open span:nth-child(3){transform:translateY(-7px) rotate(-45deg)}
+.mobile-menu{
+  display:none;position:fixed;top:64px;left:0;right:0;
+  background:rgba(247,249,252,0.97);backdrop-filter:blur(12px);
+  border-bottom:1px solid var(--line);
+  flex-direction:column;padding:16px 6%;z-index:99;
+}
+.mobile-menu.open{display:flex}
+.mobile-menu a{
+  padding:14px 0;font-size:16px;font-weight:500;
+  color:var(--ink-soft);border-bottom:1px solid var(--line);
+}
+.mobile-menu a:last-child{border-bottom:none}
+.mobile-menu .mob-cta{
+  margin-top:12px;background:var(--navy);color:var(--page);
+  padding:14px;border-radius:10px;text-align:center;
+  font-weight:600;font-size:15px;
+}
+
+/* BACK TO TOP */
+.back-top{
+  position:fixed;bottom:28px;right:28px;z-index:90;
+  width:44px;height:44px;border-radius:50%;
+  background:var(--navy);color:var(--page);
+  border:none;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+  opacity:0;transform:translateY(12px);
+  transition:opacity .3s,transform .3s,background .2s;
+  pointer-events:none;box-shadow:0 4px 20px rgba(4,44,83,.25);
+}
+.back-top.visible{opacity:1;transform:none;pointer-events:auto}
+.back-top:hover{background:var(--blue)}
+.back-top svg{width:18px;height:18px;fill:currentColor}
+
+/* FAQ SECTION */
+.faq-section{
+  padding:100px 6%;background:var(--page);
+  border-top:1px solid var(--line);
+}
+.faq-inner{max-width:760px;margin:0 auto}
+.faq-head{text-align:center;margin-bottom:52px}
+.faq-head h2{
+  font-family:'Fraunces',serif;
+  font-size:clamp(28px,3.5vw,40px);
+  font-weight:400;color:var(--navy);
+  letter-spacing:-1px;margin-bottom:12px;
+}
+.faq-head p{font-size:16px;color:var(--ink-soft)}
+.faq-list{display:flex;flex-direction:column;gap:0}
+.faq-item{border-top:1px solid var(--line)}
+.faq-item:last-child{border-bottom:1px solid var(--line)}
+.faq-q{
+  width:100%;background:none;border:none;cursor:pointer;
+  display:flex;justify-content:space-between;align-items:center;
+  padding:20px 0;text-align:left;gap:16px;
+}
+.faq-q-text{
+  font-size:16px;font-weight:600;color:var(--navy);
+  line-height:1.4;
+}
+.faq-icon{
+  width:28px;height:28px;border-radius:50%;
+  background:var(--sky);border:1px solid var(--sky-deep);
+  display:flex;align-items:center;justify-content:center;
+  flex-shrink:0;transition:background .2s,transform .3s;
+}
+.faq-icon svg{width:14px;height:14px;stroke:var(--blue);fill:none;stroke-width:2.5;stroke-linecap:round;transition:transform .3s}
+.faq-item.open .faq-icon{background:var(--navy)}
+.faq-item.open .faq-icon svg{stroke:#fff;transform:rotate(45deg)}
+.faq-a{
+  display:none;padding:0 0 20px;
+  font-size:15px;color:var(--ink-soft);
+  line-height:1.8;max-width:640px;
+}
+.faq-item.open .faq-a{display:block}
+
+/* ENHANCED FOOTER */
+.footer-main{
+  background:var(--navy);padding:60px 6% 0;
+}
+.footer-grid{
+  max-width:1160px;margin:0 auto;
+  display:grid;grid-template-columns:1.8fr 1fr 1fr 1fr;
+  gap:48px;padding-bottom:52px;
+  border-bottom:1px solid rgba(247,249,252,.1);
+}
+.footer-brand .footer-logo{margin-bottom:14px}
+.footer-brand p{
+  font-size:13.5px;color:rgba(247,249,252,.45);
+  line-height:1.8;max-width:260px;margin-bottom:20px;
+}
+.footer-badge{
+  display:inline-flex;align-items:center;gap:6px;
+  background:rgba(250,199,117,.12);border:1px solid rgba(250,199,117,.2);
+  color:var(--amber);font-size:11px;font-weight:600;
+  padding:5px 12px;border-radius:20px;letter-spacing:.3px;
+}
+.footer-col h4{
+  font-size:11px;font-weight:600;text-transform:uppercase;
+  letter-spacing:1px;color:rgba(247,249,252,.35);
+  margin-bottom:16px;
+}
+.footer-col a{
+  display:block;font-size:13.5px;
+  color:rgba(247,249,252,.6);
+  margin-bottom:10px;transition:color .2s;
+}
+.footer-col a:hover{color:#fff}
+.footer-bottom{
+  max-width:1160px;margin:0 auto;
+  display:flex;align-items:center;justify-content:space-between;
+  flex-wrap:wrap;gap:12px;padding:24px 0;
+}
+.footer-bottom p{font-size:12.5px;color:rgba(247,249,252,.3)}
+.footer-version{
+  font-family:'IBM Plex Mono',monospace;font-size:11px;
+  color:rgba(247,249,252,.25);letter-spacing:.5px;
+}
+
+/* TOAST NOTIFICATION */
+.toast{
+  position:fixed;bottom:80px;left:50%;transform:translateX(-50%) translateY(20px);
+  background:var(--navy);color:#fff;
+  padding:12px 24px;border-radius:10px;
+  font-size:14px;font-weight:500;
+  opacity:0;transition:opacity .3s,transform .3s;
+  pointer-events:none;z-index:200;white-space:nowrap;
+  box-shadow:0 8px 32px rgba(4,44,83,.3);
+  border:1px solid rgba(255,255,255,.1);
+}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+.toast.success::before{content:'✓ ';color:var(--amber)}
+
 @media(max-width:900px){
   .hero{grid-template-columns:1fr;padding-top:100px;gap:40px}
   .receipt-scene{height:380px;margin-top:16px}
   .story{grid-template-columns:1fr;gap:36px}
   .story.flip .story-vis{order:0}
   .stats-row{gap:40px}
-  .nav-links a:not(.nav-cta){display:none}
+  .nav-links{display:none}
+  .hamburger{display:flex}
+  .footer-grid{grid-template-columns:1fr 1fr;gap:32px}
+  .footer-brand{grid-column:1/-1}
+}
+@media(max-width:500px){
+  .footer-grid{grid-template-columns:1fr}
 }
 </style>
 </head>
@@ -606,11 +785,25 @@ footer p{font-size:12.5px;color:rgba(247,249,252,.4)}
     <span class="logo-text">BillSnap</span>
   </div>
   <div class="nav-links">
-    <a href="#features">What it does</a>
-    <a href="#how">How it works</a>
+    <a href="#features" class="nav-link">What it does</a>
+    <a href="#walkthrough" class="nav-link">Walkthrough</a>
+    <a href="#faq" class="nav-link">FAQ</a>
+    <a href="#how" class="nav-link">How it works</a>
     <a href="#download" class="nav-cta">Download free</a>
   </div>
+  <button class="hamburger" id="hamburger" aria-label="Menu" onclick="toggleMenu()">
+    <span></span><span></span><span></span>
+  </button>
 </nav>
+
+<!-- MOBILE MENU -->
+<div class="mobile-menu" id="mobile-menu">
+  <a href="#features" onclick="closeMobileMenu()">What it does</a>
+  <a href="#walkthrough" onclick="closeMobileMenu()">Walkthrough</a>
+  <a href="#faq" onclick="closeMobileMenu()">FAQ</a>
+  <a href="#how" onclick="closeMobileMenu()">How it works</a>
+  <a href="#download" class="mob-cta" onclick="closeMobileMenu()">Download free →</a>
+</div>
 
 <!-- HERO -->
 <section class="hero">
@@ -1052,75 +1245,219 @@ footer p{font-size:12.5px;color:rgba(247,249,252,.4)}
   <div class="final-note reveal reveal-delay-3">Windows 10 / 11 &nbsp;·&nbsp; Your data stays on your PC</div>
 </section>
 
-<!-- FOOTER -->
-<footer>
-  <div class="footer-logo">
-    <div class="footer-logo-mark">
-      <svg viewBox="0 0 24 24"><path d="M13 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V9l-6-6zm0 2l4 4h-4V5zm-4 8h6v1H9zm0 3h4v1H9zm4.5-3.5L11 17h2.5l-1 3.5 4.5-5.5H14l1.5-3z" fill="var(--navy)"/></svg>
+<!-- FAQ -->
+<section class="faq-section" id="faq">
+  <div class="faq-inner">
+    <div class="faq-head">
+      <h2 class="reveal">Questions before you download</h2>
+      <p class="reveal reveal-delay-1">Everything a shop owner usually asks.</p>
     </div>
-    <span class="footer-logo-text">BillSnap</span>
+    <div class="faq-list">
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)">
+          <span class="faq-q-text">Is BillSnap really free? What's the catch?</span>
+          <span class="faq-icon"><svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></span>
+        </button>
+        <div class="faq-a">No catch. BillSnap is completely free — no trial period, no premium tier, no credit card required. It runs on your own PC so there's no server cost for us to pass on. We built it for shops that shouldn't have to pay a monthly subscription just to write a bill.</div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)">
+          <span class="faq-q-text">Does it work without internet?</span>
+          <span class="faq-icon"><svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></span>
+        </button>
+        <div class="faq-a">Yes, completely. BillSnap runs entirely on your PC — no internet connection is ever needed, not even for setup. You can create invoices, manage inventory, and print bills even during a power cut with a laptop, or when BSNL is down. Your data never touches any server.</div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)">
+          <span class="faq-q-text">Where is my data stored? Is it safe?</span>
+          <span class="faq-icon"><svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></span>
+        </button>
+        <div class="faq-a">All your data — invoices, customers, inventory, reports — is stored in a single file on your own PC at <code style="background:var(--sky);padding:1px 6px;border-radius:4px;font-family:'IBM Plex Mono',monospace;font-size:13px">C:\Users\YourName\AppData\Roaming\BillSnap\</code>. Nothing is uploaded anywhere. BillSnap also has a one-click backup feature that zips everything into one file so you can save a copy to a pen drive.</div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)">
+          <span class="faq-q-text">Can I use it for more than one shop or business?</span>
+          <span class="faq-icon"><svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></span>
+        </button>
+        <div class="faq-a">Yes. BillSnap supports multiple companies on the same installation — each with its own invoice series, inventory, and reports. You just switch between them from a tab at the top of the screen. Each install of BillSnap (on a different PC) gets its own independent database, so two shops can each have their own completely separate data.</div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)">
+          <span class="faq-q-text">What kind of PDF bill does it generate?</span>
+          <span class="faq-icon"><svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></span>
+        </button>
+        <div class="faq-a">It generates a Cash Memo / Delivery Challan with your shop name, address, customer details, item list, and grand total. The PDF fits one A4 page with two copies — Original on the top half, Duplicate on the bottom half, separated by a dotted cut line. Your bank account details and UPI QR code can also be printed on it automatically.</div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)">
+          <span class="faq-q-text">What happens if my PC crashes or I buy a new one?</span>
+          <span class="faq-icon"><svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></span>
+        </button>
+        <div class="faq-a">Use the Backup feature before anything happens — it creates a single .zip file with your entire database, all invoice PDFs, and export files. When you set up a new PC, install BillSnap fresh, then use Restore to upload that backup zip and everything comes back exactly as it was.</div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)">
+          <span class="faq-q-text">Does it support GST invoices?</span>
+          <span class="faq-icon"><svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></span>
+        </button>
+        <div class="faq-a">The current version generates a Cash Memo / Delivery Challan format, which is what most small shops use for day-to-day billing. A full GST Tax Invoice format with GSTIN, HSN codes, and tax breakdowns is planned as a future update. If you need this urgently, it's worth raising as a request on our GitHub page.</div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)">
+          <span class="faq-q-text">Will it work on my Windows 7 or 8 PC?</span>
+          <span class="faq-icon"><svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></span>
+        </button>
+        <div class="faq-a">BillSnap requires Windows 10 or Windows 11. It uses WebView2, which is built into Windows 10 (version 21H2 and later) and Windows 11 but is not available on Windows 7 or 8. If your shop PC is still on Windows 7 or 8, we'd recommend upgrading — Microsoft stopped security updates for both versions years ago.</div>
+      </div>
+    </div>
   </div>
-  <p>Offline billing software for small shops · Free forever</p>
-  <p>© 2026 BillSnap</p>
+</section>
+
+<!-- ENHANCED FOOTER -->
+<footer class="footer-main">
+  <div class="footer-grid">
+    <div class="footer-brand">
+      <div class="footer-logo" style="display:flex;align-items:center;gap:9px;margin-bottom:14px">
+        <div class="footer-logo-mark" style="width:28px;height:28px;background:var(--amber);border-radius:7px;display:flex;align-items:center;justify-content:center">
+          <svg viewBox="0 0 24 24" style="width:15px;height:15px;fill:var(--navy)"><path d="M13 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V9l-6-6zm0 2l4 4h-4V5zm-4 8h6v1H9zm0 3h4v1H9zm4.5-3.5L11 17h2.5l-1 3.5 4.5-5.5H14l1.5-3z"/></svg>
+        </div>
+        <span style="font-family:'Fraunces',serif;font-size:18px;font-weight:600;color:#fff">BillSnap</span>
+      </div>
+      <p>Offline billing software for small shops — invoices, inventory, and reports, all on your own PC. No internet. No subscription. Free forever.</p>
+      <div class="footer-badge">✓ &nbsp;Free forever · Windows 10 & 11</div>
+    </div>
+    <div class="footer-col">
+      <h4>Product</h4>
+      <a href="#features">What it does</a>
+      <a href="#walkthrough">Walkthrough</a>
+      <a href="#how">How it works</a>
+      <a href="#faq">FAQ</a>
+      <a href="#download" onclick="handleDownload()">Download</a>
+    </div>
+    <div class="footer-col">
+      <h4>Resources</h4>
+      <a href="https://github.com/iAdityaSharma2912/billsnap" target="_blank" rel="noopener">GitHub</a>
+      <a href="https://github.com/iAdityaSharma2912/billsnap/releases" target="_blank" rel="noopener">Releases</a>
+      <a href="https://github.com/iAdityaSharma2912/billsnap/issues" target="_blank" rel="noopener">Report a bug</a>
+      <a href="https://github.com/iAdityaSharma2912/billsnap/issues/new" target="_blank" rel="noopener">Request a feature</a>
+    </div>
+    <div class="footer-col">
+      <h4>Legal</h4>
+      <a href="#">Privacy policy</a>
+      <a href="#">Terms of use</a>
+      <a href="https://github.com/iAdityaSharma2912/billsnap/blob/main/LICENSE" target="_blank" rel="noopener">License</a>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <p>© 2026 BillSnap · Made in India 🇮🇳</p>
+    <p class="footer-version">v1.0.0 · MIT License</p>
+  </div>
 </footer>
 
+<!-- BACK TO TOP -->
+<button class="back-top" id="back-top" onclick="window.scrollTo({top:0,behavior:'smooth'})" aria-label="Back to top">
+  <svg viewBox="0 0 24 24"><path d="M12 19V5m-7 7 7-7 7 7"/></svg>
+</button>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
 <script>
+// ── CONFIG ──────────────────────────────────────────────────────────────
 const DOWNLOAD_URL = 'https://github.com/iAdityaSharma2912/billsnap/releases/download/v1.0.0/BillSnap_1.0.0_x64-setup.exe';
 
-// Walkthrough tab/screen switching
+// ── DOWNLOAD ─────────────────────────────────────────────────────────────
+function handleDownload(){
+  showToast('Your download is starting…', 'success');
+  setTimeout(() => { window.location.href = DOWNLOAD_URL; }, 400);
+}
+
+// ── TOAST ────────────────────────────────────────────────────────────────
+function showToast(msg, type){
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = 'toast ' + (type || '');
+  void t.offsetWidth;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 3200);
+}
+
+// ── MOBILE MENU ──────────────────────────────────────────────────────────
+function toggleMenu(){
+  document.getElementById('hamburger').classList.toggle('open');
+  document.getElementById('mobile-menu').classList.toggle('open');
+}
+function closeMobileMenu(){
+  document.getElementById('hamburger').classList.remove('open');
+  document.getElementById('mobile-menu').classList.remove('open');
+}
+document.addEventListener('click', (e) => {
+  const nav = document.getElementById('nav');
+  const mm  = document.getElementById('mobile-menu');
+  if(mm && !nav.contains(e.target) && !mm.contains(e.target)) closeMobileMenu();
+});
+
+// ── FAQ ──────────────────────────────────────────────────────────────────
+function toggleFaq(btn){
+  const item   = btn.closest('.faq-item');
+  const isOpen = item.classList.contains('open');
+  document.querySelectorAll('.faq-item.open').forEach(i => i.classList.remove('open'));
+  if(!isOpen) item.classList.add('open');
+}
+
+// ── WALKTHROUGH ──────────────────────────────────────────────────────────
 let currentScreen = 0;
 const TOTAL_SCREENS = 4;
 
 function showScreen(index){
   currentScreen = Math.max(0, Math.min(TOTAL_SCREENS - 1, index));
-
-  // Update screens
-  document.querySelectorAll('.wt-screen').forEach((s, i) => {
-    s.classList.toggle('active', i === currentScreen);
-  });
-
-  // Update tabs
-  document.querySelectorAll('.wt-tab').forEach((t, i) => {
-    t.classList.toggle('active', i === currentScreen);
-  });
-
-  // Update progress pips
-  document.querySelectorAll('.wt-pip').forEach((p, i) => {
-    p.classList.toggle('active', i === currentScreen);
-  });
-
-  // Update prev/next buttons
+  document.querySelectorAll('.wt-screen').forEach((s, i) => s.classList.toggle('active', i === currentScreen));
+  document.querySelectorAll('.wt-tab').forEach((t, i) => t.classList.toggle('active', i === currentScreen));
+  document.querySelectorAll('.wt-pip').forEach((p, i) => p.classList.toggle('active', i === currentScreen));
   document.getElementById('wt-prev').disabled = currentScreen === 0;
   document.getElementById('wt-next').disabled = currentScreen === TOTAL_SCREENS - 1;
 }
+function stepScreen(dir){ showScreen(currentScreen + dir); }
 
-function stepScreen(dir){
-  showScreen(currentScreen + dir);
-}
-
-// Keyboard navigation when walkthrough is visible
 document.addEventListener('keydown', (e) => {
+  if(e.key === 'Escape'){ closeMobileMenu(); return; }
   const wt = document.getElementById('walkthrough');
+  if(!wt) return;
   const rect = wt.getBoundingClientRect();
-  const inView = rect.top < window.innerHeight && rect.bottom > 0;
-  if(!inView) return;
-  if(e.key === 'ArrowRight') stepScreen(1);
-  if(e.key === 'ArrowLeft') stepScreen(-1);
+  if(rect.top < window.innerHeight && rect.bottom > 0){
+    if(e.key === 'ArrowRight') stepScreen(1);
+    if(e.key === 'ArrowLeft')  stepScreen(-1);
+  }
 });
 
-function handleDownload(){
-  window.location.href = DOWNLOAD_URL;
+// ── SCROLL EFFECTS ───────────────────────────────────────────────────────
+function onScroll(){
+  const y = window.scrollY;
+  document.getElementById('nav').classList.toggle('scrolled', y > 40);
+  const bt = document.getElementById('back-top');
+  if(bt) bt.classList.toggle('visible', y > 400);
+
+  // Active nav link
+  const sections = ['features','walkthrough','faq','how','download'];
+  let current = '';
+  sections.forEach(id => {
+    const el = document.getElementById(id);
+    if(el && el.getBoundingClientRect().top <= 120) current = id;
+  });
+  document.querySelectorAll('.nav-link').forEach(a => {
+    const matches = a.getAttribute('href') === '#' + current;
+    a.style.color      = matches ? 'var(--navy)' : '';
+    a.style.fontWeight = matches ? '600' : '';
+  });
 }
+window.addEventListener('scroll', onScroll, { passive: true });
 
-window.addEventListener('scroll', () => {
-  document.getElementById('nav').classList.toggle('scrolled', window.scrollY > 40);
-});
-
+// ── SCROLL REVEAL ────────────────────────────────────────────────────────
 const obs = new IntersectionObserver((entries) => {
   entries.forEach(e => {
     if(e.isIntersecting){ e.target.classList.add('visible'); obs.unobserve(e.target); }
   });
-}, {threshold:0.1, rootMargin:'0px 0px -40px 0px'});
+}, { threshold: 0.08, rootMargin: '0px 0px -40px 0px' });
 
 document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
 
@@ -1128,6 +1465,7 @@ window.addEventListener('load', () => {
   document.querySelectorAll('.reveal').forEach(el => {
     if(el.getBoundingClientRect().top < window.innerHeight) el.classList.add('visible');
   });
+  onScroll();
 });
 </script>
 </body>

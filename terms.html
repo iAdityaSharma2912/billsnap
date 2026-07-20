@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Terms of Use — BillSnap</title>
+<meta name="description" content="BillSnap terms of use. Free offline billing software, MIT licensed, no warranties.">
+<meta name="robots" content="noindex">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;1,9..144,300;1,9..144,400&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%23042C53'/><path d='M35 18C35 14.7 37.7 12 41 12H65C68.3 12 71 14.7 71 18V82L64.5 77.5L58 82L51.5 77.5L45 82L38.5 77.5L35 80V18Z' fill='white' opacity='.9'/><path d='M58 36L44 58H52L49 72L64 52H56L58 36Z' fill='%23FAC775'/></svg>">
+<style>
+:root{
+  --navy:#042C53;--blue:#185FA5;--sky:#E6F1FB;--sky-deep:#B5D4F4;
+  --amber:#FAC775;--amber-dk:#C97F1E;--page:#F7F9FC;--page-dim:#EEF3FA;
+  --line:#D0DCEA;--ink:#042C53;--ink-soft:#3D5A7A;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{font-family:'Inter',sans-serif;background:var(--page);color:var(--ink);line-height:1.7}
+a{color:var(--blue);text-decoration:none}
+a:hover{text-decoration:underline}
+
+nav{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:18px 6%;background:rgba(247,249,252,0.95);
+  border-bottom:1px solid var(--line);
+  position:sticky;top:0;z-index:100;backdrop-filter:blur(12px);
+}
+.logo{display:flex;align-items:center;gap:10px;text-decoration:none}
+.logo-mark{width:30px;height:30px;background:var(--navy);border-radius:8px;display:flex;align-items:center;justify-content:center}
+.logo-mark svg{width:16px;height:16px;fill:var(--amber)}
+.logo-text{font-family:'Fraunces',serif;font-size:17px;font-weight:600;color:var(--navy)}
+.back-link{font-size:13.5px;color:var(--ink-soft);font-weight:500;display:flex;align-items:center;gap:6px}
+.back-link:hover{color:var(--navy);text-decoration:none}
+.back-link svg{width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round}
+
+.hero-strip{background:var(--navy);padding:60px 6% 52px}
+.hero-strip-inner{max-width:760px;margin:0 auto}
+.page-label{font-size:11px;font-weight:600;letter-spacing:1.4px;text-transform:uppercase;color:var(--amber);margin-bottom:14px}
+h1{font-family:'Fraunces',serif;font-size:clamp(32px,4vw,48px);font-weight:400;color:#fff;letter-spacing:-1.5px;line-height:1.1;margin-bottom:16px}
+.page-sub{font-size:15px;color:rgba(255,255,255,.55);line-height:1.7}
+.last-updated{margin-top:18px;font-size:12px;color:rgba(255,255,255,.3);font-style:italic}
+
+main{max-width:760px;margin:0 auto;padding:64px 6% 100px}
+
+.toc{background:var(--sky);border:1px solid var(--sky-deep);border-radius:12px;padding:24px 28px;margin-bottom:52px}
+.toc h3{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:1px;color:var(--blue);margin-bottom:14px}
+.toc ol{padding-left:18px}
+.toc li{font-size:14px;color:var(--ink-soft);margin-bottom:8px;line-height:1.5}
+.toc a{color:var(--blue)}
+
+section{margin-bottom:52px}
+section:last-child{margin-bottom:0}
+h2{font-family:'Fraunces',serif;font-size:22px;font-weight:500;color:var(--navy);margin-bottom:14px;letter-spacing:-.4px;padding-bottom:10px;border-bottom:1px solid var(--line)}
+p{font-size:15.5px;color:var(--ink-soft);margin-bottom:14px;line-height:1.8}
+p:last-child{margin-bottom:0}
+ul,ol{padding-left:22px;margin-bottom:14px}
+li{font-size:15.5px;color:var(--ink-soft);margin-bottom:8px;line-height:1.7}
+strong{color:var(--navy)}
+
+.highlight-box{background:var(--sky);border:1px solid var(--sky-deep);border-radius:10px;padding:20px 24px;margin:20px 0}
+.highlight-box p{margin:0;color:var(--blue);font-weight:500;font-size:15px}
+.highlight-box p::before{content:'ℹ️  '}
+
+.warning-box{background:#FEF3DC;border:1px solid #FAD98A;border-radius:10px;padding:20px 24px;margin:20px 0}
+.warning-box p{margin:0;color:var(--amber-dk);font-weight:500;font-size:15px}
+.warning-box p::before{content:'⚠️  '}
+
+code{background:var(--page-dim);border:1px solid var(--line);border-radius:4px;padding:1px 7px;font-size:13px;font-family:'IBM Plex Mono',monospace;color:var(--navy)}
+
+footer{background:var(--navy);padding:28px 6%;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px}
+footer p{font-size:12.5px;color:rgba(255,255,255,.35)}
+footer a{font-size:12.5px;color:rgba(255,255,255,.45);margin-left:20px}
+footer a:hover{color:#fff;text-decoration:none}
+</style>
+</head>
+<body>
+
+<nav>
+  <a class="logo" href="/">
+    <div class="logo-mark"><svg viewBox="0 0 24 24"><path d="M13 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V9l-6-6zm0 2l4 4h-4V5zm-4 8h6v1H9zm0 3h4v1H9zm4.5-3.5L11 17h2.5l-1 3.5 4.5-5.5H14l1.5-3z"/></svg></div>
+    <span class="logo-text">BillSnap</span>
+  </a>
+  <a class="back-link" href="/">
+    <svg viewBox="0 0 24 24"><path d="M19 12H5m7-7-7 7 7 7"/></svg>
+    Back to home
+  </a>
+</nav>
+
+<div class="hero-strip">
+  <div class="hero-strip-inner">
+    <div class="page-label">Legal</div>
+    <h1>Terms of Use</h1>
+    <p class="page-sub">Simple, plain-English terms for using BillSnap. No surprises, no lock-in. You own your data and you can stop using it any time.</p>
+    <div class="last-updated">Last updated: 20 July 2026</div>
+  </div>
+</div>
+
+<main>
+
+  <div class="toc">
+    <h3>Contents</h3>
+    <ol>
+      <li><a href="#acceptance">Acceptance of terms</a></li>
+      <li><a href="#description">What BillSnap is</a></li>
+      <li><a href="#license">License to use</a></li>
+      <li><a href="#your-data">Your data and content</a></li>
+      <li><a href="#permitted-use">Permitted use</a></li>
+      <li><a href="#prohibited">Prohibited use</a></li>
+      <li><a href="#disclaimer">Disclaimer of warranties</a></li>
+      <li><a href="#liability">Limitation of liability</a></li>
+      <li><a href="#updates">Updates and changes</a></li>
+      <li><a href="#governing">Governing law</a></li>
+      <li><a href="#contact">Contact</a></li>
+    </ol>
+  </div>
+
+  <section id="acceptance">
+    <h2>1. Acceptance of terms</h2>
+    <p>By downloading, installing, or using BillSnap, you agree to these Terms of Use. If you do not agree, do not install or use BillSnap.</p>
+    <p>These terms apply to the BillSnap desktop application and this website (billsnap.vercel.app).</p>
+  </section>
+
+  <section id="description">
+    <h2>2. What BillSnap is</h2>
+    <p>BillSnap is a free, offline desktop application for Windows that allows small shop owners to create invoices, manage inventory, and generate reports. It runs entirely on the user's own PC with no internet connection required and no external server involvement.</p>
+    <div class="highlight-box">
+      <p>BillSnap is provided free of charge. There is no subscription, no premium tier, and no future obligation to pay for any current features.</p>
+    </div>
+  </section>
+
+  <section id="license">
+    <h2>3. License to use</h2>
+    <p>BillSnap is open-source software released under the <strong>MIT License</strong>. The full license text is available at <a href="https://github.com/iAdityaSharma2912/billsnap/blob/main/LICENSE" target="_blank" rel="noopener">github.com/iAdityaSharma2912/billsnap/blob/main/LICENSE</a>.</p>
+    <p>In plain terms, the MIT License means:</p>
+    <ul>
+      <li>You can use BillSnap for any purpose, including commercial use</li>
+      <li>You can copy, modify, and distribute BillSnap</li>
+      <li>You can use BillSnap in your own software</li>
+      <li>The only requirement is that you keep the MIT License notice intact in any copies or derivative works</li>
+    </ul>
+    <p>You do not need to ask permission to install BillSnap on multiple PCs, use it across multiple shops, or modify it for your own needs.</p>
+  </section>
+
+  <section id="your-data">
+    <h2>4. Your data and content</h2>
+    <p><strong>You own all data you enter into BillSnap.</strong> Customer records, invoices, inventory items, company settings — all of it is yours. It is stored locally on your PC at <code>%APPDATA%\BillSnap\</code> and is never transmitted to us or any third party.</p>
+    <p>We make no claim over any data you create using BillSnap. We have no ability to access your data, and we accept no responsibility for data loss resulting from hardware failure, accidental deletion, or other events on your own PC. We strongly recommend using BillSnap's built-in Backup feature regularly.</p>
+  </section>
+
+  <section id="permitted-use">
+    <h2>5. Permitted use</h2>
+    <p>You may use BillSnap to:</p>
+    <ul>
+      <li>Create and manage invoices for your shop or business</li>
+      <li>Track inventory and manage customer records</li>
+      <li>Generate and print PDF bills</li>
+      <li>View sales reports and export data</li>
+      <li>Install BillSnap on multiple PCs across multiple shop locations</li>
+      <li>Modify the source code for your own use under the MIT License</li>
+      <li>Share BillSnap with others (link to the official website or GitHub)</li>
+    </ul>
+  </section>
+
+  <section id="prohibited">
+    <h2>6. Prohibited use</h2>
+    <p>You may not use BillSnap to:</p>
+    <ul>
+      <li>Create fraudulent invoices or misrepresent transactions</li>
+      <li>Generate invoices for goods or services that do not exist (fictitious billing)</li>
+      <li>Facilitate tax evasion or financial fraud</li>
+      <li>Distribute modified versions of BillSnap that contain malware or malicious code</li>
+      <li>Remove or alter the MIT License notice in source code distributions</li>
+      <li>Sell BillSnap itself as a standalone product (though commercial use of BillSnap for your own billing is fully permitted)</li>
+    </ul>
+    <div class="warning-box">
+      <p>Any use of BillSnap to create false, fraudulent, or misleading invoices is strictly prohibited and may constitute a criminal offence under applicable Indian laws including the IPC and IT Act.</p>
+    </div>
+  </section>
+
+  <section id="disclaimer">
+    <h2>7. Disclaimer of warranties</h2>
+    <p>BillSnap is provided <strong>"as is"</strong> and <strong>"as available"</strong>, without warranty of any kind, express or implied.</p>
+    <p>We make no warranties that:</p>
+    <ul>
+      <li>BillSnap will be error-free or uninterrupted</li>
+      <li>BillSnap will meet your specific requirements</li>
+      <li>Any errors will be corrected</li>
+      <li>BillSnap's output (invoices, reports, exports) will be accepted by any tax authority, bank, or regulatory body</li>
+    </ul>
+    <p>BillSnap generates Cash Memo / Delivery Challan format invoices. It does not currently generate GST Tax Invoices with GSTIN and HSN codes. You are responsible for determining whether BillSnap's output meets your legal and regulatory obligations.</p>
+  </section>
+
+  <section id="liability">
+    <h2>8. Limitation of liability</h2>
+    <p>To the maximum extent permitted by applicable law, the BillSnap developers shall not be liable for any:</p>
+    <ul>
+      <li>Loss of data resulting from hardware failure, accidental deletion, or software bugs</li>
+      <li>Financial loss arising from errors in invoices generated by BillSnap</li>
+      <li>Tax penalties or compliance issues arising from use of BillSnap</li>
+      <li>Indirect, incidental, special, or consequential damages of any kind</li>
+    </ul>
+    <p>Your use of BillSnap is entirely at your own risk. You are responsible for verifying the accuracy of all invoices before printing or sharing them, and for maintaining backups of your own data.</p>
+  </section>
+
+  <section id="updates">
+    <h2>9. Updates and changes</h2>
+    <p>We may update BillSnap from time to time. Updates are distributed as new installer versions on the GitHub Releases page. There is no automatic update mechanism — you choose when to install a new version. Older versions will continue to work as long as your Windows PC supports them.</p>
+    <p>We may update these Terms of Use. Material changes will be noted in the GitHub repository's release notes. Continued use after changes constitutes acceptance of the updated terms.</p>
+  </section>
+
+  <section id="governing">
+    <h2>10. Governing law</h2>
+    <p>These terms are governed by the laws of India. Any disputes shall be subject to the exclusive jurisdiction of the courts of New Delhi, India.</p>
+  </section>
+
+  <section id="contact">
+    <h2>11. Contact</h2>
+    <p>For questions about these terms, please open an issue on the <a href="https://github.com/iAdityaSharma2912/billsnap/issues" target="_blank" rel="noopener">BillSnap GitHub repository</a>.</p>
+  </section>
+
+</main>
+
+<footer>
+  <p>© 2026 BillSnap · Made in India 🇮🇳</p>
+  <div>
+    <a href="/">Home</a>
+    <a href="/privacy.html">Privacy policy</a>
+    <a href="https://github.com/iAdityaSharma2912/billsnap" target="_blank" rel="noopener">GitHub</a>
+  </div>
+</footer>
+
+</body>
+</html>
