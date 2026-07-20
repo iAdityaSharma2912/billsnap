@@ -1,0 +1,1138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BillSnap — Every bill, written down properly.</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,300;1,9..144,400;1,9..144,500&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --navy:    #042C53;
+  --blue:    #185FA5;
+  --sky:     #E6F1FB;
+  --sky-deep:#B5D4F4;
+  --amber:   #FAC775;
+  --amber-dk:#C97F1E;
+  --white:   #ffffff;
+  --page:    #F7F9FC;
+  --page-dim:#EEF3FA;
+  --line:    #D0DCEA;
+  --ink:     #042C53;
+  --ink-soft:#3D5A7A;
+  --r:14px;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{font-family:'Inter',sans-serif;background:var(--page);color:var(--ink);line-height:1.6;overflow-x:hidden}
+a{text-decoration:none;color:inherit}
+::selection{background:var(--sky-deep);color:var(--navy)}
+
+/* REVEAL */
+.reveal{opacity:0;transform:translateY(28px);transition:opacity .72s cubic-bezier(.22,1,.36,1),transform .72s cubic-bezier(.22,1,.36,1)}
+.reveal.visible{opacity:1;transform:none}
+.reveal-delay-1{transition-delay:.1s}
+.reveal-delay-2{transition-delay:.2s}
+.reveal-delay-3{transition-delay:.32s}
+.reveal-delay-4{transition-delay:.44s}
+
+/* NAV */
+nav{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:20px 6%;position:fixed;top:0;left:0;right:0;
+  background:rgba(247,249,252,0);backdrop-filter:blur(0px);
+  z-index:100;transition:background .4s,backdrop-filter .4s,border-color .4s;
+  border-bottom:1px solid transparent;
+}
+nav.scrolled{
+  background:rgba(247,249,252,0.94);backdrop-filter:blur(12px);
+  border-bottom-color:var(--line);
+}
+.logo{display:flex;align-items:center;gap:11px}
+.logo-mark{
+  width:34px;height:34px;background:var(--navy);
+  border-radius:9px;display:flex;align-items:center;
+  justify-content:center;flex-shrink:0;
+}
+.logo-mark svg{width:18px;height:18px;fill:var(--amber)}
+.logo-text{font-family:'Fraunces',serif;font-size:19px;font-weight:600;color:var(--navy);letter-spacing:-.3px}
+.nav-links{display:flex;align-items:center;gap:36px}
+.nav-links a{font-size:13.5px;color:var(--ink-soft);font-weight:500;transition:color .2s}
+.nav-links a:hover{color:var(--navy)}
+.nav-cta{
+  background:var(--navy);color:var(--page)!important;
+  padding:10px 22px;border-radius:8px;
+  font-size:13px;font-weight:600;transition:background .2s;
+}
+.nav-cta:hover{background:var(--blue)}
+
+/* HERO */
+.hero{
+  padding:130px 6% 80px;
+  display:grid;grid-template-columns:1.1fr 0.9fr;
+  gap:40px;align-items:center;
+  max-width:1280px;margin:0 auto;position:relative;
+}
+.hero-eyebrow{
+  font-size:11.5px;font-weight:600;letter-spacing:1.4px;
+  text-transform:uppercase;color:var(--blue);
+  margin-bottom:22px;display:flex;align-items:center;gap:10px;
+}
+.hero-eyebrow::before{content:'';width:20px;height:1px;background:var(--blue)}
+h1{
+  font-family:'Fraunces',serif;
+  font-size:clamp(38px,5vw,64px);
+  font-weight:400;line-height:1.02;
+  color:var(--navy);margin-bottom:24px;letter-spacing:-1.5px;
+}
+h1 em{font-style:italic;color:var(--amber-dk);font-weight:300}
+.hero-sub{
+  font-size:17px;color:var(--ink-soft);
+  max-width:430px;margin-bottom:36px;line-height:1.75;font-weight:400;
+}
+.hero-actions{display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+.btn-primary{
+  background:var(--navy);color:var(--page);
+  padding:15px 28px;border-radius:10px;font-size:15px;
+  font-weight:600;display:inline-flex;align-items:center;gap:9px;
+  border:none;cursor:pointer;
+  transition:transform .2s,background .2s;letter-spacing:-.2px;
+}
+.btn-primary:hover{transform:translateY(-2px);background:var(--blue)}
+.btn-primary svg{width:16px;height:16px;fill:var(--amber)}
+.btn-secondary{
+  background:transparent;color:var(--navy);
+  padding:15px 8px;font-size:15px;font-weight:500;
+  border:none;border-bottom:1.5px solid var(--navy);
+  cursor:pointer;transition:opacity .15s;
+}
+.btn-secondary:hover{opacity:.55}
+.hero-meta{margin-top:26px;font-size:12.5px;color:var(--ink-soft)}
+.hero-meta strong{color:var(--navy)}
+
+/* RECEIPT STACK */
+.receipt-scene{
+  position:relative;height:500px;
+  display:flex;align-items:center;justify-content:center;
+}
+.receipt-shadow{
+  position:absolute;bottom:24px;left:50%;transform:translateX(-50%);
+  width:200px;height:16px;
+  background:rgba(4,44,83,.12);border-radius:50%;filter:blur(10px);
+}
+.receipt{
+  position:absolute;width:260px;
+  background:var(--white);border-radius:3px;
+  padding:24px 20px;
+  font-family:'IBM Plex Mono',monospace;
+}
+.receipt-edge{
+  position:absolute;left:0;right:0;height:12px;
+  background:radial-gradient(circle at 10px 0,transparent 7px,var(--white) 7px) 0 0/20px 12px repeat-x;
+}
+.receipt-edge.top{top:-11px}
+.receipt-edge.bot{bottom:-11px;transform:scaleY(-1)}
+.receipt.b2{
+  transform:rotate(-8deg) translate(-44px,14px);
+  box-shadow:0 8px 32px rgba(4,44,83,.09);
+  opacity:.45;z-index:1;background:var(--page-dim);
+}
+.receipt.b2 .receipt-edge{background:radial-gradient(circle at 10px 0,transparent 7px,var(--page-dim) 7px) 0 0/20px 12px repeat-x}
+.receipt.b1{
+  transform:rotate(5deg) translate(30px,-8px);
+  box-shadow:0 8px 32px rgba(4,44,83,.09);
+  opacity:.32;z-index:1;background:var(--page);
+}
+.receipt.b1 .receipt-edge{background:radial-gradient(circle at 10px 0,transparent 7px,var(--page) 7px) 0 0/20px 12px repeat-x}
+.receipt.front{
+  transform:rotate(1deg);
+  box-shadow:0 20px 60px rgba(4,44,83,.16);
+  z-index:2;
+}
+.r-shop{font-family:'Fraunces',serif;font-size:14.5px;font-weight:600;color:var(--navy);text-align:center;margin-bottom:1px}
+.r-addr{font-size:9px;color:var(--ink-soft);text-align:center;letter-spacing:.3px;margin-bottom:3px}
+.r-num{font-size:9px;color:var(--ink-soft);text-align:center;margin-bottom:14px}
+.r-divider{border:none;border-top:1px dashed var(--line);margin:10px 0}
+.r-head{display:flex;justify-content:space-between;font-size:8.5px;color:var(--ink-soft);text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px}
+.r-row{display:flex;justify-content:space-between;font-size:11.5px;color:var(--ink);margin-bottom:5px}
+.r-row span:first-child{flex:1;padding-right:8px}
+.r-total{display:flex;justify-content:space-between;font-size:13.5px;font-weight:600;color:var(--navy);margin-top:10px;padding-top:10px;border-top:1px solid var(--line)}
+.r-paid{
+  position:absolute;top:36%;right:-8px;
+  border:1.5px solid var(--blue);color:var(--blue);
+  font-size:10px;font-weight:600;padding:3px 9px;
+  border-radius:4px;transform:rotate(-14deg);
+  letter-spacing:1.8px;background:var(--white);
+}
+.r-footer{font-size:8.5px;color:var(--ink-soft);text-align:center;margin-top:14px;letter-spacing:.3px}
+
+/* MARQUEE */
+.marquee-strip{
+  padding:22px 0;border-top:1px solid var(--line);
+  border-bottom:1px solid var(--line);
+  background:var(--page-dim);overflow:hidden;
+}
+.marquee-inner{display:flex;gap:0;white-space:nowrap;animation:marquee 32s linear infinite;width:max-content}
+.marquee-item{
+  display:inline-flex;align-items:center;gap:10px;
+  padding:0 40px;
+  font-family:'Fraunces',serif;font-size:17px;
+  color:var(--ink-soft);font-weight:400;opacity:.6;
+}
+.marquee-dot{width:5px;height:5px;background:var(--amber-dk);border-radius:50%;display:inline-block;flex-shrink:0}
+@keyframes marquee{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+@media(prefers-reduced-motion:reduce){.marquee-inner{animation:none}}
+
+/* STORY SECTIONS */
+.story{
+  padding:100px 6%;max-width:1240px;margin:0 auto;
+  display:grid;grid-template-columns:1fr 1fr;
+  gap:80px;align-items:center;
+}
+.story.flip .story-vis{order:-1}
+.story-label{
+  font-size:11px;font-weight:600;letter-spacing:1.5px;
+  text-transform:uppercase;color:var(--amber-dk);margin-bottom:18px;
+  display:flex;align-items:center;gap:10px;
+}
+.story-label::before{content:'';width:14px;height:1px;background:var(--amber-dk)}
+h2.story-h{
+  font-family:'Fraunces',serif;
+  font-size:clamp(28px,3.2vw,40px);
+  font-weight:400;color:var(--navy);
+  line-height:1.12;margin-bottom:18px;letter-spacing:-1px;
+}
+h2.story-h em{font-style:italic;color:var(--amber-dk);font-weight:300}
+.story-body{font-size:16px;color:var(--ink-soft);line-height:1.8;max-width:440px}
+.vis-box{
+  background:var(--page-dim);border:1px solid var(--line);
+  border-radius:var(--r);padding:28px;
+}
+
+/* LEDGER VISUAL */
+.ledger{width:100%;font-family:'IBM Plex Mono',monospace;border-radius:10px;overflow:hidden;border:1px solid var(--line)}
+.ledger-head{
+  display:grid;grid-template-columns:1fr 78px 72px;
+  background:var(--navy);color:var(--page);
+  padding:10px 14px;font-size:10px;letter-spacing:.6px;text-transform:uppercase;
+}
+.ledger-row{
+  display:grid;grid-template-columns:1fr 78px 72px;
+  padding:11px 14px;font-size:12px;
+  border-top:1px solid var(--page-dim);
+  background:var(--white);align-items:center;
+}
+.ledger-row:nth-child(odd){background:var(--page)}
+.tag{display:inline-block;padding:2px 9px;border-radius:20px;font-size:9px;font-weight:600;letter-spacing:.3px}
+.tag-g{background:var(--sky);color:var(--blue)}
+.tag-a{background:#FEF3DC;color:var(--amber-dk)}
+
+/* STOCK VISUAL */
+.dial-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;width:100%}
+.dial-card{
+  background:var(--white);border:1px solid var(--line);
+  border-radius:12px;padding:20px 16px;
+}
+.dial-card.wide{grid-column:1/-1}
+.dial-num{
+  font-family:'IBM Plex Mono',monospace;
+  font-size:26px;font-weight:600;color:var(--navy);
+  margin-bottom:4px;letter-spacing:-1px;
+}
+.dial-num.amber{color:var(--amber-dk)}
+.dial-label{font-size:10.5px;color:var(--ink-soft);text-transform:uppercase;letter-spacing:.5px}
+.stock-bar{margin-top:10px;height:4px;background:var(--line);border-radius:2px}
+.stock-fill{height:100%;border-radius:2px}
+.stock-fill.ok{background:var(--blue)}
+.stock-fill.low{background:var(--amber)}
+.alert-row{
+  grid-column:1/-1;
+  background:#FEF3DC;border:1px solid #FAD98A;
+  border-radius:10px;padding:14px 16px;
+  font-family:'IBM Plex Mono',monospace;font-size:11.5px;
+  color:var(--amber-dk);line-height:1.9;
+}
+
+/* OFFLINE VISUAL */
+.offline-vis{display:flex;flex-direction:column;align-items:center;gap:20px;padding:20px}
+.pulse-ring{
+  width:140px;height:140px;border-radius:50%;
+  background:var(--navy);
+  display:flex;align-items:center;justify-content:center;
+  position:relative;
+}
+.pulse-ring svg{width:52px;height:52px;fill:var(--amber)}
+.pulse-ring::before,.pulse-ring::after{
+  content:'';position:absolute;inset:0;border-radius:50%;
+  border:1.5px solid var(--sky-deep);
+  animation:pulse 2.4s ease-out infinite;opacity:0;
+}
+.pulse-ring::after{animation-delay:1.2s}
+@keyframes pulse{0%{transform:scale(1);opacity:.7}100%{transform:scale(1.7);opacity:0}}
+.offline-caption{font-family:'Fraunces',serif;font-style:italic;font-size:15px;color:var(--ink-soft)}
+.check-list{
+  display:flex;flex-direction:column;gap:8px;
+  font-family:'IBM Plex Mono',monospace;font-size:11.5px;
+  color:var(--ink-soft);line-height:1.9;text-align:center;
+}
+
+/* WALKTHROUGH */
+.walkthrough{
+  padding:100px 6%;background:var(--navy);
+  position:relative;overflow:hidden;
+}
+.walkthrough::before{
+  content:'';position:absolute;inset:0;
+  background-image:linear-gradient(rgba(24,95,165,.1) 1px,transparent 1px),
+                   linear-gradient(90deg,rgba(24,95,165,.1) 1px,transparent 1px);
+  background-size:48px 48px;
+  mask-image:radial-gradient(ellipse 90% 80% at 50% 50%,black 40%,transparent 100%);
+  pointer-events:none;
+}
+.walkthrough-inner{max-width:1160px;margin:0 auto;position:relative;z-index:1}
+.wt-header{text-align:center;margin-bottom:64px}
+.wt-label{
+  font-size:11px;font-weight:600;letter-spacing:1.4px;
+  text-transform:uppercase;color:var(--amber);margin-bottom:16px;
+}
+.wt-header h2{
+  font-family:'Fraunces',serif;
+  font-size:clamp(30px,4vw,46px);
+  font-weight:400;color:#fff;
+  letter-spacing:-1.5px;line-height:1.12;
+}
+.wt-header h2 em{font-style:italic;color:var(--amber);font-weight:300}
+
+/* Tab navigation */
+.wt-tabs{
+  display:flex;justify-content:center;gap:0;
+  background:rgba(255,255,255,.06);
+  border:1px solid rgba(255,255,255,.1);
+  border-radius:12px;padding:4px;
+  margin-bottom:48px;flex-wrap:wrap;
+}
+.wt-tab{
+  padding:10px 22px;border-radius:9px;
+  font-size:13px;font-weight:500;color:rgba(255,255,255,.5);
+  cursor:pointer;border:none;background:none;
+  transition:background .2s,color .2s;white-space:nowrap;
+}
+.wt-tab.active{background:var(--blue);color:#fff;font-weight:600}
+.wt-tab:hover:not(.active){color:rgba(255,255,255,.85)}
+
+/* Screen area */
+.wt-screens{position:relative}
+.wt-screen{
+  display:none;
+  grid-template-columns:1fr 1fr;gap:56px;
+  align-items:center;
+}
+.wt-screen.active{display:grid}
+.wt-screen-text{}
+.wt-step-num{
+  font-family:'IBM Plex Mono',monospace;
+  font-size:11px;font-weight:600;color:var(--amber);
+  letter-spacing:1px;text-transform:uppercase;margin-bottom:14px;
+}
+.wt-screen-text h3{
+  font-family:'Fraunces',serif;
+  font-size:clamp(24px,2.8vw,34px);
+  font-weight:400;color:#fff;
+  line-height:1.15;letter-spacing:-.8px;margin-bottom:16px;
+}
+.wt-screen-text h3 em{font-style:italic;color:var(--amber);font-weight:300}
+.wt-screen-text p{font-size:15px;color:rgba(255,255,255,.58);line-height:1.8;margin-bottom:24px}
+.wt-features{display:flex;flex-direction:column;gap:10px}
+.wt-feat{
+  display:flex;align-items:center;gap:10px;
+  font-size:13.5px;color:rgba(255,255,255,.7);
+}
+.wt-feat-dot{
+  width:20px;height:20px;border-radius:50%;
+  background:rgba(250,199,117,.15);
+  border:1px solid rgba(250,199,117,.3);
+  display:flex;align-items:center;justify-content:center;
+  flex-shrink:0;
+}
+.wt-feat-dot svg{width:11px;height:11px;fill:var(--amber)}
+
+/* Mock screen */
+.wt-mock{
+  background:rgba(255,255,255,.04);
+  border:1px solid rgba(255,255,255,.1);
+  border-radius:14px;padding:10px;
+  box-shadow:0 32px 80px rgba(0,0,0,.35);
+}
+.wt-mock-bar{
+  display:flex;align-items:center;gap:5px;
+  padding:0 2px 8px;
+}
+.wt-dot{width:8px;height:8px;border-radius:50%;background:rgba(255,255,255,.12)}
+.wt-url{
+  flex:1;background:rgba(255,255,255,.06);
+  border-radius:4px;padding:4px 10px;
+  font-size:10px;font-family:'IBM Plex Mono',monospace;
+  color:rgba(255,255,255,.25);
+}
+.wt-screen-inner{
+  border-radius:8px;overflow:hidden;
+  display:grid;grid-template-columns:160px 1fr;
+  background:var(--page);min-height:300px;
+}
+.wt-sb{background:var(--navy);padding:12px 6px}
+.wt-sb-logo{
+  display:flex;align-items:center;gap:6px;
+  padding:4px 8px 14px;
+  border-bottom:1px solid rgba(255,255,255,.08);margin-bottom:10px;
+}
+.wt-sb-logo-box{
+  width:20px;height:20px;background:var(--amber);
+  border-radius:4px;display:flex;align-items:center;justify-content:center;
+}
+.wt-sb-logo-box svg{width:11px;height:11px;fill:var(--navy)}
+.wt-sb-logo-text{font-size:11.5px;font-weight:700;color:#fff;font-family:'Fraunces',serif}
+.wt-sb-item{
+  display:flex;align-items:center;gap:7px;
+  padding:8px 8px;border-radius:6px;
+  font-size:10.5px;color:rgba(255,255,255,.45);
+  margin-bottom:1px;
+}
+.wt-sb-item.hl{background:rgba(255,255,255,.1);color:#fff}
+.wt-sb-item svg{width:12px;height:12px;fill:currentColor;flex-shrink:0}
+.wt-sb-sec{font-size:8.5px;font-weight:600;text-transform:uppercase;letter-spacing:.7px;color:rgba(255,255,255,.2);padding:10px 8px 4px}
+.wt-main{padding:16px;display:flex;flex-direction:column;gap:12px}
+.wt-topbar{display:flex;justify-content:space-between;align-items:center}
+.wt-page-title{font-size:13px;font-weight:700;color:var(--navy)}
+.wt-action-btn{background:var(--navy);color:#fff;padding:6px 12px;border-radius:6px;font-size:10px;font-weight:600;border:none}
+
+/* Screen: Dashboard */
+.dash-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.dash-stat{background:#fff;border:1px solid var(--line);border-radius:8px;padding:10px 12px}
+.dash-stat .dl{font-size:9px;color:var(--ink-soft);text-transform:uppercase;letter-spacing:.3px;margin-bottom:3px}
+.dash-stat .dv{font-size:18px;font-weight:700;color:var(--navy);font-family:'IBM Plex Mono',monospace;letter-spacing:-1px}
+.dash-stat .dv.am{color:var(--amber-dk)}
+.dash-table{background:#fff;border:1px solid var(--line);border-radius:8px;overflow:hidden}
+.dt-head{display:grid;grid-template-columns:1fr 70px 60px;background:var(--sky);padding:7px 12px;font-size:9px;font-weight:600;text-transform:uppercase;letter-spacing:.3px;color:var(--navy)}
+.dt-row{display:grid;grid-template-columns:1fr 70px 60px;padding:8px 12px;font-size:10.5px;border-top:1px solid var(--page);color:var(--ink-soft);align-items:center}
+.dp{display:inline-block;padding:1px 7px;border-radius:8px;font-size:8.5px;font-weight:600}
+.dp-g{background:var(--sky);color:var(--blue)}
+.dp-a{background:#FEF3DC;color:var(--amber-dk)}
+
+/* Screen: New Invoice */
+.inv-form{display:flex;flex-direction:column;gap:10px}
+.inv-field-row{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.inv-field{display:flex;flex-direction:column;gap:3px}
+.inv-label{font-size:9px;font-weight:600;text-transform:uppercase;letter-spacing:.4px;color:var(--ink-soft)}
+.inv-input{
+  background:#fff;border:1px solid var(--line);
+  border-radius:6px;padding:7px 10px;
+  font-size:11px;color:var(--navy);font-family:'IBM Plex Mono',monospace;
+}
+.inv-input.hl{border-color:var(--blue);box-shadow:0 0 0 2px var(--sky)}
+.inv-items-table{background:#fff;border:1px solid var(--line);border-radius:8px;overflow:hidden}
+.inv-th{display:grid;grid-template-columns:1fr 48px 56px 60px;background:var(--sky);padding:7px 12px;font-size:9px;font-weight:600;text-transform:uppercase;letter-spacing:.3px;color:var(--navy)}
+.inv-tr{display:grid;grid-template-columns:1fr 48px 56px 60px;padding:7px 12px;font-size:10.5px;border-top:1px solid var(--page);color:var(--ink-soft)}
+.inv-total-bar{
+  background:var(--sky);border:1px solid var(--sky-deep);
+  border-radius:7px;padding:8px 14px;
+  display:flex;justify-content:space-between;align-items:center;
+  margin-top:4px;
+}
+.inv-total-label{font-size:10px;color:var(--blue);font-weight:600;text-transform:uppercase;letter-spacing:.4px}
+.inv-total-val{font-size:14px;font-weight:700;color:var(--navy);font-family:'IBM Plex Mono',monospace}
+
+/* Screen: Inventory */
+.inv-list{display:flex;flex-direction:column;gap:6px}
+.inv-row{
+  background:#fff;border:1px solid var(--line);
+  border-radius:8px;padding:10px 14px;
+}
+.inv-row-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}
+.inv-row-name{font-size:12px;font-weight:600;color:var(--navy)}
+.inv-row-count{font-family:'IBM Plex Mono',monospace;font-size:12px;font-weight:600}
+.cnt-ok{color:var(--blue)}.cnt-low{color:var(--amber-dk)}
+.inv-bar{height:4px;background:var(--line);border-radius:2px;overflow:hidden}
+.inv-bar-fill{height:100%;border-radius:2px}
+.inv-bar-fill.ok{background:var(--blue)}
+.inv-bar-fill.low{background:var(--amber)}
+.inv-alert{font-size:10px;color:var(--amber-dk);margin-top:4px;display:flex;align-items:center;gap:4px}
+
+/* Screen: Reports */
+.rep-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px}
+.rep-card{background:#fff;border:1px solid var(--line);border-radius:8px;padding:12px}
+.rep-label{font-size:9px;color:var(--ink-soft);text-transform:uppercase;letter-spacing:.4px;margin-bottom:4px}
+.rep-val{font-size:18px;font-weight:700;color:var(--navy);font-family:'IBM Plex Mono',monospace;letter-spacing:-1px}
+.rep-breakdown{background:#fff;border:1px solid var(--line);border-radius:8px;overflow:hidden}
+.rep-bh{display:grid;grid-template-columns:1fr 1fr 80px;background:var(--sky);padding:7px 12px;font-size:9px;font-weight:600;text-transform:uppercase;letter-spacing:.3px;color:var(--navy)}
+.rep-br{display:grid;grid-template-columns:1fr 1fr 80px;padding:8px 12px;font-size:10.5px;border-top:1px solid var(--page);color:var(--ink-soft)}
+.rep-amount{font-family:'IBM Plex Mono',monospace;font-weight:600;color:var(--navy)}
+
+/* Nav arrows */
+.wt-nav{display:flex;justify-content:center;align-items:center;gap:16px;margin-top:40px}
+.wt-nav-btn{
+  width:40px;height:40px;border-radius:50%;
+  background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12);
+  color:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center;
+  transition:background .2s;font-size:16px;
+}
+.wt-nav-btn:hover{background:rgba(255,255,255,.15)}
+.wt-nav-btn:disabled{opacity:.3;cursor:default}
+.wt-progress{display:flex;gap:6px}
+.wt-pip{width:24px;height:3px;border-radius:2px;background:rgba(255,255,255,.2);transition:background .3s,width .3s}
+.wt-pip.active{background:var(--amber);width:36px}
+
+@media(max-width:900px){
+  .wt-screen.active{grid-template-columns:1fr;gap:32px}
+  .wt-screen-inner{grid-template-columns:1fr}
+  .wt-sb{display:none}
+}
+
+/* MANIFESTO */
+.manifesto{
+  padding:120px 6%;background:var(--navy);
+  color:var(--page);text-align:center;
+  position:relative;overflow:hidden;
+}
+.manifesto::before{
+  content:'"';position:absolute;top:-60px;left:3%;
+  font-family:'Fraunces',serif;font-size:500px;
+  color:rgba(250,199,117,.05);line-height:1;pointer-events:none;
+}
+.manifesto-inner{max-width:700px;margin:0 auto;position:relative;z-index:1}
+.mf-label{
+  font-size:11px;font-weight:600;letter-spacing:1.4px;
+  text-transform:uppercase;color:var(--amber);margin-bottom:20px;
+}
+.manifesto h2{
+  font-family:'Fraunces',serif;
+  font-size:clamp(30px,4vw,50px);
+  font-weight:400;line-height:1.18;
+  margin-bottom:24px;letter-spacing:-1.5px;
+}
+.manifesto h2 em{font-style:italic;color:var(--amber);font-weight:300}
+.manifesto p{
+  font-size:16px;color:rgba(247,249,252,.58);
+  max-width:500px;margin:0 auto 56px;line-height:1.85;
+}
+.stats-row{
+  display:flex;justify-content:center;gap:64px;
+  flex-wrap:wrap;padding-top:44px;
+  border-top:1px solid rgba(247,249,252,.1);
+}
+.stat-item{text-align:center}
+.stat-num{
+  font-family:'IBM Plex Mono',monospace;
+  font-size:32px;font-weight:600;color:var(--amber);
+  letter-spacing:-1px;
+}
+.stat-lbl{
+  font-size:11px;color:rgba(247,249,252,.4);
+  text-transform:uppercase;letter-spacing:.7px;margin-top:6px;
+}
+
+/* STEPS */
+.steps{padding:100px 6%;max-width:860px;margin:0 auto}
+.steps-head{text-align:center;margin-bottom:64px}
+.steps-head h2{
+  font-family:'Fraunces',serif;
+  font-size:clamp(28px,3.5vw,40px);
+  font-weight:400;color:var(--navy);
+  letter-spacing:-1px;margin-bottom:12px;
+}
+.steps-head p{font-size:16px;color:var(--ink-soft)}
+.step-row{
+  display:grid;grid-template-columns:64px 1fr;
+  gap:20px;padding:28px 0;
+  border-top:1px solid var(--line);
+}
+.step-row:last-child{border-bottom:1px solid var(--line)}
+.step-num{
+  font-family:'IBM Plex Mono',monospace;
+  font-size:13px;color:var(--amber-dk);
+  font-weight:600;padding-top:3px;letter-spacing:.5px;
+}
+.step-title{
+  font-family:'Fraunces',serif;
+  font-size:20px;font-weight:500;color:var(--navy);
+  margin-bottom:6px;letter-spacing:-.4px;
+}
+.step-desc{font-size:14.5px;color:var(--ink-soft);max-width:500px;line-height:1.7}
+
+/* FINAL CTA */
+.final-cta{
+  padding:120px 6% 110px;text-align:center;
+  background:var(--page-dim);border-top:1px solid var(--line);
+}
+.final-cta h2{
+  font-family:'Fraunces',serif;
+  font-size:clamp(34px,5vw,58px);
+  font-weight:400;color:var(--navy);
+  letter-spacing:-2px;margin-bottom:18px;line-height:1.05;
+}
+.final-cta h2 em{font-style:italic;color:var(--amber-dk);font-weight:300}
+.final-cta p{font-size:16px;color:var(--ink-soft);margin-bottom:40px}
+.final-note{margin-top:18px;font-size:12.5px;color:var(--ink-soft)}
+
+/* FOOTER */
+footer{
+  padding:38px 6%;background:var(--navy);
+  display:flex;align-items:center;
+  justify-content:space-between;flex-wrap:wrap;gap:12px;
+}
+.footer-logo{display:flex;align-items:center;gap:9px}
+.footer-logo-mark{width:26px;height:26px;background:var(--amber);border-radius:6px;display:flex;align-items:center;justify-content:center}
+.footer-logo-mark svg{width:14px;height:14px;fill:var(--navy)}
+.footer-logo-text{font-family:'Fraunces',serif;font-size:16px;font-weight:600;color:var(--page)}
+footer p{font-size:12.5px;color:rgba(247,249,252,.4)}
+
+@media(max-width:900px){
+  .hero{grid-template-columns:1fr;padding-top:100px;gap:40px}
+  .receipt-scene{height:380px;margin-top:16px}
+  .story{grid-template-columns:1fr;gap:36px}
+  .story.flip .story-vis{order:0}
+  .stats-row{gap:40px}
+  .nav-links a:not(.nav-cta){display:none}
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav id="nav">
+  <div class="logo">
+    <div class="logo-mark">
+      <svg viewBox="0 0 24 24"><path d="M13 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V9l-6-6zm0 2l4 4h-4V5zm-4 8h6v1H9zm0 3h4v1H9zm4.5-3.5L11 17h2.5l-1 3.5 4.5-5.5H14l1.5-3z"/></svg>
+    </div>
+    <span class="logo-text">BillSnap</span>
+  </div>
+  <div class="nav-links">
+    <a href="#features">What it does</a>
+    <a href="#how">How it works</a>
+    <a href="#download" class="nav-cta">Download free</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div>
+    <div class="hero-eyebrow reveal">Offline billing, done right</div>
+    <h1 class="reveal reveal-delay-1">Every bill,<br><em>written down</em><br>properly.</h1>
+    <p class="hero-sub reveal reveal-delay-2">BillSnap turns your desktop into a billing counter — invoices, inventory, and daily totals, kept the way a good shop ledger always has been. No internet. No subscription. No middleman.</p>
+    <div class="hero-actions reveal reveal-delay-3">
+      <button class="btn-primary" onclick="handleDownload()">
+        <svg viewBox="0 0 24 24"><path d="M12 15l-4-4h3V4h2v7h3l-4 4zm-7 3h14v2H5v-2z"/></svg>
+        Download BillSnap
+      </button>
+      <button class="btn-secondary" onclick="document.getElementById('features').scrollIntoView({behavior:'smooth'})">See how it works</button>
+    </div>
+    <div class="hero-meta reveal reveal-delay-4">Free forever · <strong>Windows 10 & 11</strong> · Your data never leaves your PC</div>
+  </div>
+
+  <!-- RECEIPT STACK -->
+  <div class="receipt-scene reveal reveal-delay-2">
+    <div class="receipt-shadow"></div>
+
+    <div class="receipt b2">
+      <div class="receipt-edge top"></div>
+      <div class="r-shop">Your Shop Name</div>
+      <div class="r-divider"></div>
+      <div class="r-row"><span>Item One</span><span>₹—</span></div>
+      <div class="r-total"><span>Total</span><span>₹—</span></div>
+      <div class="receipt-edge bot"></div>
+    </div>
+
+    <div class="receipt b1">
+      <div class="receipt-edge top"></div>
+      <div class="r-shop">Your Shop Name</div>
+      <div class="r-divider"></div>
+      <div class="r-row"><span>Item One</span><span>₹—</span></div>
+      <div class="r-row"><span>Item Two</span><span>₹—</span></div>
+      <div class="r-total"><span>Total</span><span>₹—</span></div>
+      <div class="receipt-edge bot"></div>
+    </div>
+
+    <div class="receipt front">
+      <div class="receipt-edge top"></div>
+      <div class="r-shop">Your Shop Name</div>
+      <div class="r-addr">Shop address · City, PIN</div>
+      <div class="r-num">Invoice #001 &nbsp;|&nbsp; Today</div>
+      <div class="r-divider"></div>
+      <div class="r-head"><span>Item</span><span>Qty</span><span>Amt</span></div>
+      <div class="r-row"><span>Item One</span><span>×5</span><span>₹—</span></div>
+      <div class="r-row"><span>Item Two</span><span>×2</span><span>₹—</span></div>
+      <div class="r-row"><span>Item Three</span><span>×8</span><span>₹—</span></div>
+      <div class="r-divider"></div>
+      <div class="r-total"><span>Grand Total</span><span>₹—</span></div>
+      <div class="r-paid">PAID</div>
+      <div class="r-footer">Thank you · Your Shop Name</div>
+      <div class="receipt-edge bot"></div>
+    </div>
+  </div>
+</section>
+
+<!-- MARQUEE -->
+<div class="marquee-strip">
+  <div class="marquee-inner">
+    <span class="marquee-item"><span class="marquee-dot"></span>Electronics shops</span>
+    <span class="marquee-item"><span class="marquee-dot"></span>Kirana stores</span>
+    <span class="marquee-item"><span class="marquee-dot"></span>Hardware shops</span>
+    <span class="marquee-item"><span class="marquee-dot"></span>Stationery shops</span>
+    <span class="marquee-item"><span class="marquee-dot"></span>Cloth merchants</span>
+    <span class="marquee-item"><span class="marquee-dot"></span>Medical stores</span>
+    <span class="marquee-item"><span class="marquee-dot"></span>Auto parts shops</span>
+    <span class="marquee-item"><span class="marquee-dot"></span>Wholesale traders</span>
+    <span class="marquee-item"><span class="marquee-dot"></span>Electronics shops</span>
+    <span class="marquee-item"><span class="marquee-dot"></span>Kirana stores</span>
+    <span class="marquee-item"><span class="marquee-dot"></span>Hardware shops</span>
+    <span class="marquee-item"><span class="marquee-dot"></span>Stationery shops</span>
+    <span class="marquee-item"><span class="marquee-dot"></span>Cloth merchants</span>
+    <span class="marquee-item"><span class="marquee-dot"></span>Medical stores</span>
+    <span class="marquee-item"><span class="marquee-dot"></span>Auto parts shops</span>
+    <span class="marquee-item"><span class="marquee-dot"></span>Wholesale traders</span>
+  </div>
+</div>
+
+<!-- STORY 1: BILLING -->
+<section class="story" id="features">
+  <div>
+    <div class="story-label reveal">01 — Billing</div>
+    <h2 class="story-h reveal reveal-delay-1">A proper cash memo,<br><em>every single time.</em></h2>
+    <p class="story-body reveal reveal-delay-2">Original and duplicate on one A4 sheet, printed straight from the app — the same format your customers already trust, just faster to write and impossible to lose.</p>
+  </div>
+  <div class="story-vis vis-box reveal reveal-delay-1">
+    <div class="ledger">
+      <div class="ledger-head"><span>Customer</span><span>Amount</span><span>Status</span></div>
+      <div class="ledger-row"><span>Customer A</span><span>₹—</span><span><span class="tag tag-g">Paid</span></span></div>
+      <div class="ledger-row"><span>Customer B</span><span>₹—</span><span><span class="tag tag-g">Paid</span></span></div>
+      <div class="ledger-row"><span>Customer C</span><span>₹—</span><span><span class="tag tag-a">Pending</span></span></div>
+      <div class="ledger-row"><span>Customer D</span><span>₹—</span><span><span class="tag tag-g">Paid</span></span></div>
+      <div class="ledger-row"><span>Customer E</span><span>₹—</span><span><span class="tag tag-g">Paid</span></span></div>
+    </div>
+  </div>
+</section>
+
+<!-- STORY 2: INVENTORY -->
+<section class="story flip" style="background:var(--page-dim);padding-left:6%;padding-right:6%;max-width:100%">
+  <div style="max-width:1240px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:center;width:100%;padding:100px 0">
+    <div class="story-vis vis-box reveal">
+      <div class="dial-grid">
+        <div class="dial-card wide">
+          <div class="dial-num">—</div>
+          <div class="dial-label">Today's sales</div>
+          <div class="stock-bar"><div class="stock-fill ok" style="width:72%"></div></div>
+        </div>
+        <div class="dial-card">
+          <div class="dial-num">—</div>
+          <div class="dial-label">Invoices today</div>
+        </div>
+        <div class="dial-card">
+          <div class="dial-num amber">—</div>
+          <div class="dial-label">Low stock alerts</div>
+        </div>
+        <div class="alert-row">
+          <div style="font-size:9px;font-weight:600;text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px">Low stock</div>
+          Item A &nbsp;— running low<br>
+          Item B &nbsp;— running low
+        </div>
+      </div>
+    </div>
+    <div>
+      <div class="story-label reveal">02 — Inventory</div>
+      <h2 class="story-h reveal reveal-delay-1">Stock that<br><em>counts itself.</em></h2>
+      <p class="story-body reveal reveal-delay-2">Every sale deducts from inventory automatically. When something's running low, BillSnap tells you before your customer does. No spreadsheet, no guesswork.</p>
+    </div>
+  </div>
+</section>
+
+<!-- STORY 3: OFFLINE -->
+<section class="story">
+  <div>
+    <div class="story-label reveal">03 — Offline-first</div>
+    <h2 class="story-h reveal reveal-delay-1">No internet.<br>No server.<br><em>No excuses.</em></h2>
+    <p class="story-body reveal reveal-delay-2">Everything runs and saves on your own PC. No connection to lose, no cloud to trust, no monthly bill for the privilege of using your own data.</p>
+  </div>
+  <div class="story-vis vis-box reveal reveal-delay-1">
+    <div class="offline-vis">
+      <div class="pulse-ring">
+        <svg viewBox="0 0 24 24"><path d="M12 2a5 5 0 1 0 5 5 5 5 0 0 0-5-5zm0 8a3 3 0 1 1 3-3 3 3 0 0 1-3 3zm0 3c-5.33 0-8 2.67-8 4v1h16v-1c0-1.33-2.67-4-8-4z"/></svg>
+      </div>
+      <div class="offline-caption">runs entirely on your PC</div>
+      <div class="check-list">
+        ✓ &nbsp;No internet required — ever<br>
+        ✓ &nbsp;Data never leaves your shop<br>
+        ✓ &nbsp;No account or sign-up needed<br>
+        ✓ &nbsp;One-click backup & restore
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- WALKTHROUGH -->
+<section class="walkthrough" id="walkthrough">
+  <div class="walkthrough-inner">
+    <div class="wt-header">
+      <div class="wt-label reveal">App walkthrough</div>
+      <h2 class="reveal reveal-delay-1">See exactly how<br><em>it works.</em></h2>
+    </div>
+
+    <div class="wt-tabs reveal reveal-delay-2" id="wt-tabs">
+      <button class="wt-tab active" onclick="showScreen(0)">Dashboard</button>
+      <button class="wt-tab" onclick="showScreen(1)">New Invoice</button>
+      <button class="wt-tab" onclick="showScreen(2)">Inventory</button>
+      <button class="wt-tab" onclick="showScreen(3)">Reports</button>
+    </div>
+
+    <div class="wt-screens reveal reveal-delay-3">
+
+      <!-- SCREEN 0: DASHBOARD -->
+      <div class="wt-screen active" id="wt-screen-0">
+        <div class="wt-screen-text">
+          <div class="wt-step-num">Screen 01 / 04</div>
+          <h3>Your shop's<br><em>daily picture,</em><br>at a glance.</h3>
+          <p>Open BillSnap and instantly see today's sales total, how many invoices you've raised, and which items are running low on stock — no digging around.</p>
+          <div class="wt-features">
+            <div class="wt-feat"><div class="wt-feat-dot"><svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg></div>Today's sales and invoice count</div>
+            <div class="wt-feat"><div class="wt-feat-dot"><svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg></div>Low stock alerts front and center</div>
+            <div class="wt-feat"><div class="wt-feat-dot"><svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg></div>Recent invoice list with payment status</div>
+            <div class="wt-feat"><div class="wt-feat-dot"><svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg></div>Switch between multiple companies instantly</div>
+          </div>
+        </div>
+        <div class="wt-mock">
+          <div class="wt-mock-bar">
+            <div class="wt-dot"></div><div class="wt-dot"></div><div class="wt-dot"></div>
+            <div class="wt-url">BillSnap · Dashboard</div>
+          </div>
+          <div class="wt-screen-inner">
+            <div class="wt-sb">
+              <div class="wt-sb-logo"><div class="wt-sb-logo-box"><svg viewBox="0 0 24 24"><path d="M13 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V9l-6-6z" fill="var(--amber)"/></svg></div><span class="wt-sb-logo-text">BillSnap</span></div>
+              <div class="wt-sb-item hl"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>Dashboard</div>
+              <div class="wt-sb-item"><svg viewBox="0 0 24 24"><path d="M12 5v14m-7-7h14"/></svg>New Invoice</div>
+              <div class="wt-sb-item"><svg viewBox="0 0 24 24"><path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/></svg>History</div>
+              <div class="wt-sb-sec">Manage</div>
+              <div class="wt-sb-item"><svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>Customers</div>
+              <div class="wt-sb-item"><svg viewBox="0 0 24 24"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>Inventory</div>
+            </div>
+            <div class="wt-main">
+              <div class="wt-topbar"><div class="wt-page-title">Dashboard</div><button class="wt-action-btn">+ New Invoice</button></div>
+              <div class="dash-stats">
+                <div class="dash-stat"><div class="dl">Today's sales</div><div class="dv">₹—</div></div>
+                <div class="dash-stat"><div class="dl">Invoices</div><div class="dv">—</div></div>
+                <div class="dash-stat"><div class="dl">Low stock</div><div class="dv am">—</div></div>
+              </div>
+              <div class="dash-table">
+                <div class="dt-head"><span>Customer</span><span>Amount</span><span>Status</span></div>
+                <div class="dt-row"><span>Customer A</span><span>₹—</span><span><span class="dp dp-g">Paid</span></span></div>
+                <div class="dt-row"><span>Customer B</span><span>₹—</span><span><span class="dp dp-g">Paid</span></span></div>
+                <div class="dt-row"><span>Customer C</span><span>₹—</span><span><span class="dp dp-a">Pending</span></span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SCREEN 1: NEW INVOICE -->
+      <div class="wt-screen" id="wt-screen-1">
+        <div class="wt-screen-text">
+          <div class="wt-step-num">Screen 02 / 04</div>
+          <h3>Create a bill<br><em>in under</em><br>a minute.</h3>
+          <p>Pick the customer, add items from your inventory, set quantities — the total calculates automatically. Hit save and the PDF is generated instantly, ready to print.</p>
+          <div class="wt-features">
+            <div class="wt-feat"><div class="wt-feat-dot"><svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg></div>Auto-fills customer details from your list</div>
+            <div class="wt-feat"><div class="wt-feat-dot"><svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg></div>Items pulled from your inventory</div>
+            <div class="wt-feat"><div class="wt-feat-dot"><svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg></div>Total calculated automatically</div>
+            <div class="wt-feat"><div class="wt-feat-dot"><svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg></div>PDF generated and saved on the spot</div>
+          </div>
+        </div>
+        <div class="wt-mock">
+          <div class="wt-mock-bar">
+            <div class="wt-dot"></div><div class="wt-dot"></div><div class="wt-dot"></div>
+            <div class="wt-url">BillSnap · New Invoice</div>
+          </div>
+          <div class="wt-screen-inner">
+            <div class="wt-sb">
+              <div class="wt-sb-logo"><div class="wt-sb-logo-box"><svg viewBox="0 0 24 24"><path d="M13 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V9l-6-6z" fill="var(--amber)"/></svg></div><span class="wt-sb-logo-text">BillSnap</span></div>
+              <div class="wt-sb-item"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>Dashboard</div>
+              <div class="wt-sb-item hl"><svg viewBox="0 0 24 24"><path d="M12 5v14m-7-7h14"/></svg>New Invoice</div>
+              <div class="wt-sb-item"><svg viewBox="0 0 24 24"><path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/></svg>History</div>
+              <div class="wt-sb-sec">Manage</div>
+              <div class="wt-sb-item"><svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>Customers</div>
+              <div class="wt-sb-item"><svg viewBox="0 0 24 24"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>Inventory</div>
+            </div>
+            <div class="wt-main">
+              <div class="wt-topbar"><div class="wt-page-title">New Invoice</div></div>
+              <div class="inv-form">
+                <div class="inv-field-row">
+                  <div class="inv-field"><div class="inv-label">Customer</div><div class="inv-input hl">Customer A</div></div>
+                  <div class="inv-field"><div class="inv-label">Date</div><div class="inv-input">Today</div></div>
+                </div>
+                <div class="inv-items-table">
+                  <div class="inv-th"><span>Item</span><span>Qty</span><span>Rate</span><span>Amount</span></div>
+                  <div class="inv-tr"><span>Item One</span><span>5</span><span>₹—</span><span>₹—</span></div>
+                  <div class="inv-tr"><span>Item Two</span><span>2</span><span>₹—</span><span>₹—</span></div>
+                  <div class="inv-tr" style="color:var(--sky-deep);font-style:italic"><span>+ Add item</span></div>
+                </div>
+                <div class="inv-total-bar">
+                  <span class="inv-total-label">Grand Total</span>
+                  <span class="inv-total-val">₹—</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SCREEN 2: INVENTORY -->
+      <div class="wt-screen" id="wt-screen-2">
+        <div class="wt-screen-text">
+          <div class="wt-step-num">Screen 03 / 04</div>
+          <h3>Stock tracked<br><em>automatically,</em><br>no effort.</h3>
+          <p>Every time you save an invoice, stock is deducted from the matching inventory items. You see exactly what's left and get a warning before anything runs out.</p>
+          <div class="wt-features">
+            <div class="wt-feat"><div class="wt-feat-dot"><svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg></div>Stock deducts automatically on each sale</div>
+            <div class="wt-feat"><div class="wt-feat-dot"><svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg></div>Visual stock bar for every item</div>
+            <div class="wt-feat"><div class="wt-feat-dot"><svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg></div>Low stock warning before you run out</div>
+            <div class="wt-feat"><div class="wt-feat-dot"><svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg></div>Separate inventory per company</div>
+          </div>
+        </div>
+        <div class="wt-mock">
+          <div class="wt-mock-bar">
+            <div class="wt-dot"></div><div class="wt-dot"></div><div class="wt-dot"></div>
+            <div class="wt-url">BillSnap · Inventory</div>
+          </div>
+          <div class="wt-screen-inner">
+            <div class="wt-sb">
+              <div class="wt-sb-logo"><div class="wt-sb-logo-box"><svg viewBox="0 0 24 24"><path d="M13 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V9l-6-6z" fill="var(--amber)"/></svg></div><span class="wt-sb-logo-text">BillSnap</span></div>
+              <div class="wt-sb-item"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>Dashboard</div>
+              <div class="wt-sb-item"><svg viewBox="0 0 24 24"><path d="M12 5v14m-7-7h14"/></svg>New Invoice</div>
+              <div class="wt-sb-item"><svg viewBox="0 0 24 24"><path d="M8 6h13M8 12h13M8 18h13"/></svg>History</div>
+              <div class="wt-sb-sec">Manage</div>
+              <div class="wt-sb-item"><svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>Customers</div>
+              <div class="wt-sb-item hl"><svg viewBox="0 0 24 24"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>Inventory</div>
+            </div>
+            <div class="wt-main">
+              <div class="wt-topbar"><div class="wt-page-title">Inventory</div><button class="wt-action-btn">+ Add item</button></div>
+              <div class="inv-list">
+                <div class="inv-row">
+                  <div class="inv-row-top"><span class="inv-row-name">Item One</span><span class="inv-row-count cnt-ok">48 units</span></div>
+                  <div class="inv-bar"><div class="inv-bar-fill ok" style="width:80%"></div></div>
+                </div>
+                <div class="inv-row">
+                  <div class="inv-row-top"><span class="inv-row-name">Item Two</span><span class="inv-row-count cnt-low">3 units</span></div>
+                  <div class="inv-bar"><div class="inv-bar-fill low" style="width:10%"></div></div>
+                  <div class="inv-alert">⚠ Low stock — reorder soon</div>
+                </div>
+                <div class="inv-row">
+                  <div class="inv-row-top"><span class="inv-row-name">Item Three</span><span class="inv-row-count cnt-ok">22 units</span></div>
+                  <div class="inv-bar"><div class="inv-bar-fill ok" style="width:55%"></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SCREEN 3: REPORTS -->
+      <div class="wt-screen" id="wt-screen-3">
+        <div class="wt-screen-text">
+          <div class="wt-step-num">Screen 04 / 04</div>
+          <h3>Know exactly<br><em>how your shop</em><br>is doing.</h3>
+          <p>Daily and monthly reports show total sales, top customers, payment mode breakdown, and which items moved most — all filterable by company and date, and printable.</p>
+          <div class="wt-features">
+            <div class="wt-feat"><div class="wt-feat-dot"><svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg></div>Daily and monthly sales reports</div>
+            <div class="wt-feat"><div class="wt-feat-dot"><svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg></div>Inventory report — what sold today</div>
+            <div class="wt-feat"><div class="wt-feat-dot"><svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg></div>Payment mode breakdown (cash, UPI, credit)</div>
+            <div class="wt-feat"><div class="wt-feat-dot"><svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg></div>Print any report directly from the app</div>
+          </div>
+        </div>
+        <div class="wt-mock">
+          <div class="wt-mock-bar">
+            <div class="wt-dot"></div><div class="wt-dot"></div><div class="wt-dot"></div>
+            <div class="wt-url">BillSnap · Reports</div>
+          </div>
+          <div class="wt-screen-inner">
+            <div class="wt-sb">
+              <div class="wt-sb-logo"><div class="wt-sb-logo-box"><svg viewBox="0 0 24 24"><path d="M13 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V9l-6-6z" fill="var(--amber)"/></svg></div><span class="wt-sb-logo-text">BillSnap</span></div>
+              <div class="wt-sb-item"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>Dashboard</div>
+              <div class="wt-sb-item"><svg viewBox="0 0 24 24"><path d="M12 5v14m-7-7h14"/></svg>New Invoice</div>
+              <div class="wt-sb-item"><svg viewBox="0 0 24 24"><path d="M8 6h13M8 12h13M8 18h13"/></svg>History</div>
+              <div class="wt-sb-sec">Reports</div>
+              <div class="wt-sb-item hl"><svg viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>Reports</div>
+              <div class="wt-sb-item"><svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4m4-5 5 5 5-5m-5 5V3"/></svg>Export</div>
+            </div>
+            <div class="wt-main">
+              <div class="wt-topbar"><div class="wt-page-title">Reports — Daily</div></div>
+              <div class="rep-grid">
+                <div class="rep-card"><div class="rep-label">Total sales</div><div class="rep-val">₹—</div></div>
+                <div class="rep-card"><div class="rep-label">Invoices</div><div class="rep-val">—</div></div>
+              </div>
+              <div class="rep-breakdown">
+                <div class="rep-bh"><span>Customer</span><span>Payment</span><span>Amount</span></div>
+                <div class="rep-br"><span>Customer A</span><span>Cash</span><span class="rep-amount">₹—</span></div>
+                <div class="rep-br"><span>Customer B</span><span>UPI</span><span class="rep-amount">₹—</span></div>
+                <div class="rep-br"><span>Customer C</span><span>Cash</span><span class="rep-amount">₹—</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /wt-screens -->
+
+    <!-- Navigation -->
+    <div class="wt-nav reveal reveal-delay-4">
+      <button class="wt-nav-btn" id="wt-prev" onclick="stepScreen(-1)" disabled>&#8592;</button>
+      <div class="wt-progress" id="wt-progress">
+        <div class="wt-pip active"></div>
+        <div class="wt-pip"></div>
+        <div class="wt-pip"></div>
+        <div class="wt-pip"></div>
+      </div>
+      <button class="wt-nav-btn" id="wt-next" onclick="stepScreen(1)">&#8594;</button>
+    </div>
+
+  </div>
+</section>
+
+<!-- MANIFESTO -->
+<section class="manifesto">
+  <div class="manifesto-inner">
+    <div class="mf-label reveal">Why BillSnap exists</div>
+    <h2 class="reveal reveal-delay-1">
+      Small shops don't need<br>another <em>subscription.</em><br>They need a proper ledger.
+    </h2>
+    <p class="reveal reveal-delay-2">Every shop already knows how to write a bill. We just made it faster, neater, and impossible to lose — without asking for your data, your internet, or your money every month.</p>
+    <div class="stats-row reveal reveal-delay-3">
+      <div class="stat-item"><div class="stat-num">₹0</div><div class="stat-lbl">Monthly fee</div></div>
+      <div class="stat-item"><div class="stat-num">0</div><div class="stat-lbl">Internet needed</div></div>
+      <div class="stat-item"><div class="stat-num">50MB</div><div class="stat-lbl">Installer size</div></div>
+      <div class="stat-item"><div class="stat-num">2min</div><div class="stat-lbl">To set up</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- STEPS -->
+<section class="steps" id="how">
+  <div class="steps-head">
+    <h2 class="reveal">Up and running in three minutes</h2>
+    <p class="reveal reveal-delay-1">No technical knowledge needed — if you can use a calculator, you can use this.</p>
+  </div>
+  <div>
+    <div class="step-row reveal">
+      <div class="step-num">01</div>
+      <div>
+        <div class="step-title">Download the installer</div>
+        <div class="step-desc">One .exe file, about 50 MB. No Python, no Node.js, no other software to install first.</div>
+      </div>
+    </div>
+    <div class="step-row reveal reveal-delay-1">
+      <div class="step-num">02</div>
+      <div>
+        <div class="step-title">Set up your shop</div>
+        <div class="step-desc">Double-click, enter your shop name and address, and you're in. Takes under two minutes.</div>
+      </div>
+    </div>
+    <div class="step-row reveal reveal-delay-2">
+      <div class="step-num">03</div>
+      <div>
+        <div class="step-title">Start billing</div>
+        <div class="step-desc">Create your first invoice, print the cash memo, hand it to your customer. Everything saved automatically.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FINAL CTA -->
+<section class="final-cta" id="download">
+  <h2 class="reveal">Write your next bill<br><em>the right way.</em></h2>
+  <p class="reveal reveal-delay-1">Free forever. No sign-up. No catch.</p>
+  <button class="btn-primary reveal reveal-delay-2" style="margin:0 auto" onclick="handleDownload()">
+    <svg viewBox="0 0 24 24"><path d="M12 15l-4-4h3V4h2v7h3l-4 4zm-7 3h14v2H5v-2z"/></svg>
+    Download BillSnap — Free
+  </button>
+  <div class="final-note reveal reveal-delay-3">Windows 10 / 11 &nbsp;·&nbsp; Your data stays on your PC</div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-logo">
+    <div class="footer-logo-mark">
+      <svg viewBox="0 0 24 24"><path d="M13 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V9l-6-6zm0 2l4 4h-4V5zm-4 8h6v1H9zm0 3h4v1H9zm4.5-3.5L11 17h2.5l-1 3.5 4.5-5.5H14l1.5-3z" fill="var(--navy)"/></svg>
+    </div>
+    <span class="footer-logo-text">BillSnap</span>
+  </div>
+  <p>Offline billing software for small shops · Free forever</p>
+  <p>© 2026 BillSnap</p>
+</footer>
+
+<script>
+const DOWNLOAD_URL = 'https://github.com/iAdityaSharma2912/billsnap/releases/download/v1.0.0/BillSnap_1.0.0_x64-setup.exe';
+
+// Walkthrough tab/screen switching
+let currentScreen = 0;
+const TOTAL_SCREENS = 4;
+
+function showScreen(index){
+  currentScreen = Math.max(0, Math.min(TOTAL_SCREENS - 1, index));
+
+  // Update screens
+  document.querySelectorAll('.wt-screen').forEach((s, i) => {
+    s.classList.toggle('active', i === currentScreen);
+  });
+
+  // Update tabs
+  document.querySelectorAll('.wt-tab').forEach((t, i) => {
+    t.classList.toggle('active', i === currentScreen);
+  });
+
+  // Update progress pips
+  document.querySelectorAll('.wt-pip').forEach((p, i) => {
+    p.classList.toggle('active', i === currentScreen);
+  });
+
+  // Update prev/next buttons
+  document.getElementById('wt-prev').disabled = currentScreen === 0;
+  document.getElementById('wt-next').disabled = currentScreen === TOTAL_SCREENS - 1;
+}
+
+function stepScreen(dir){
+  showScreen(currentScreen + dir);
+}
+
+// Keyboard navigation when walkthrough is visible
+document.addEventListener('keydown', (e) => {
+  const wt = document.getElementById('walkthrough');
+  const rect = wt.getBoundingClientRect();
+  const inView = rect.top < window.innerHeight && rect.bottom > 0;
+  if(!inView) return;
+  if(e.key === 'ArrowRight') stepScreen(1);
+  if(e.key === 'ArrowLeft') stepScreen(-1);
+});
+
+function handleDownload(){
+  if(DOWNLOAD_URL === 'https://github.com/iAdityaSharma2912/billsnap/releases/download/v1.0.0/BillSnap_1.0.0_x64-setup.exe'){
+    alert('Replace DOWNLOAD_URL in the script tag with your GitHub Releases .exe link.');
+  } else {
+    window.location.href = DOWNLOAD_URL;
+  }
+}
+
+window.addEventListener('scroll', () => {
+  document.getElementById('nav').classList.toggle('scrolled', window.scrollY > 40);
+});
+
+const obs = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if(e.isIntersecting){ e.target.classList.add('visible'); obs.unobserve(e.target); }
+  });
+}, {threshold:0.1, rootMargin:'0px 0px -40px 0px'});
+
+document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
+
+window.addEventListener('load', () => {
+  document.querySelectorAll('.reveal').forEach(el => {
+    if(el.getBoundingClientRect().top < window.innerHeight) el.classList.add('visible');
+  });
+});
+</script>
+</body>
+</html>
