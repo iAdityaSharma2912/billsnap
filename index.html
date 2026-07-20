@@ -1109,11 +1109,7 @@ document.addEventListener('keydown', (e) => {
 });
 
 function handleDownload(){
-  if(DOWNLOAD_URL === 'https://github.com/iAdityaSharma2912/billsnap/releases/download/v1.0.0/BillSnap_1.0.0_x64-setup.exe'){
-    alert('Replace DOWNLOAD_URL in the script tag with your GitHub Releases .exe link.');
-  } else {
-    window.location.href = DOWNLOAD_URL;
-  }
+  window.location.href = DOWNLOAD_URL;
 }
 
 window.addEventListener('scroll', () => {
