@@ -927,35 +927,124 @@ footer p{font-size:12.5px;color:rgba(247,249,252,.4)}
 </section>
 
 <!-- STORY 2: INVENTORY -->
-<section class="story flip" style="background:var(--page-dim);padding-left:6%;padding-right:6%;max-width:100%">
-  <div style="max-width:1240px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:center;width:100%;padding:100px 0">
-    <div class="story-vis vis-box reveal">
-      <div class="dial-grid">
-        <div class="dial-card wide">
-          <div class="dial-num">—</div>
-          <div class="dial-label">Today's sales</div>
-          <div class="stock-bar"><div class="stock-fill ok" style="width:72%"></div></div>
-        </div>
-        <div class="dial-card">
-          <div class="dial-num">—</div>
-          <div class="dial-label">Invoices today</div>
-        </div>
-        <div class="dial-card">
-          <div class="dial-num amber">—</div>
-          <div class="dial-label">Low stock alerts</div>
-        </div>
-        <div class="alert-row">
-          <div style="font-size:9px;font-weight:600;text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px">Low stock</div>
-          Item A &nbsp;— running low<br>
-          Item B &nbsp;— running low
+<section style="background:var(--page-dim);padding:100px 6%;border-top:1px solid var(--line);border-bottom:1px solid var(--line)">
+  <div style="max-width:1240px;margin:0 auto;display:grid;grid-template-columns:3fr 2fr;gap:72px;align-items:start">
+
+    <!-- LEFT: Inventory card — full width -->
+    <div class="reveal" style="background:var(--white);border:1px solid var(--line);border-radius:16px;overflow:hidden;box-shadow:0 4px 32px rgba(4,44,83,.08);width:100%">
+
+      <!-- Header -->
+      <div style="padding:18px 24px;background:var(--navy);display:flex;justify-content:space-between;align-items:center">
+        <div style="font-family:'Fraunces',serif;font-size:17px;font-weight:600;color:#fff;letter-spacing:-.3px">Inventory</div>
+        <div style="display:flex;gap:8px">
+          <span style="background:rgba(255,255,255,.1);color:rgba(255,255,255,.65);font-size:11px;font-weight:600;padding:4px 14px;border-radius:20px;white-space:nowrap">Sharma Agency</span>
+          <span style="background:var(--amber);color:var(--navy);font-size:11px;font-weight:700;padding:4px 14px;border-radius:20px;white-space:nowrap">2 Low ⚠</span>
         </div>
       </div>
+
+      <!-- Column headers -->
+      <div style="display:grid;grid-template-columns:minmax(0,1fr) 110px 100px;padding:11px 24px;background:var(--sky)">
+        <span style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.6px;color:var(--navy)">Item name</span>
+        <span style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.6px;color:var(--navy);text-align:right">Stock</span>
+        <span style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.6px;color:var(--navy);text-align:right">Status</span>
+      </div>
+
+      <!-- Row: Ceiling Fan -->
+      <div style="display:grid;grid-template-columns:minmax(0,1fr) 110px 100px;padding:16px 24px;border-top:1px solid var(--page);align-items:center;gap:8px">
+        <div>
+          <div style="font-size:13.5px;font-weight:600;color:var(--navy);margin-bottom:7px;white-space:nowrap">Ceiling Fan 48"</div>
+          <div style="height:4px;background:var(--page-dim);border-radius:2px"><div style="height:100%;width:80%;background:var(--blue);border-radius:2px"></div></div>
+        </div>
+        <div style="text-align:right;font-family:'IBM Plex Mono',monospace;font-size:13px;font-weight:600;color:var(--navy);white-space:nowrap">48 units</div>
+        <div style="text-align:right;white-space:nowrap"><span style="background:var(--sky);color:var(--blue);font-size:10px;font-weight:600;padding:3px 10px;border-radius:20px;border:1px solid var(--sky-deep)">In stock</span></div>
+      </div>
+
+      <!-- Row: RR LED — low -->
+      <div style="display:grid;grid-template-columns:minmax(0,1fr) 110px 100px;padding:16px 24px;border-top:1px solid var(--page);align-items:center;gap:8px;background:#FFFCF4">
+        <div>
+          <div style="font-size:13.5px;font-weight:600;color:var(--navy);margin-bottom:7px;white-space:nowrap">RR LED Bulb 15w</div>
+          <div style="height:4px;background:var(--page-dim);border-radius:2px"><div style="height:100%;width:6%;background:var(--amber);border-radius:2px"></div></div>
+          <div style="font-size:11px;color:var(--amber-dk);margin-top:5px;font-weight:500;white-space:nowrap">⚠ Reorder soon</div>
+        </div>
+        <div style="text-align:right;font-family:'IBM Plex Mono',monospace;font-size:13px;font-weight:600;color:var(--amber-dk);white-space:nowrap">3 units</div>
+        <div style="text-align:right;white-space:nowrap"><span style="background:#FEF3DC;color:var(--amber-dk);font-size:10px;font-weight:600;padding:3px 10px;border-radius:20px;border:1px solid #FAD98A">Low stock</span></div>
+      </div>
+
+      <!-- Row: Switch Board -->
+      <div style="display:grid;grid-template-columns:minmax(0,1fr) 110px 100px;padding:16px 24px;border-top:1px solid var(--page);align-items:center;gap:8px">
+        <div>
+          <div style="font-size:13.5px;font-weight:600;color:var(--navy);margin-bottom:7px;white-space:nowrap">Switch Board 6A</div>
+          <div style="height:4px;background:var(--page-dim);border-radius:2px"><div style="height:100%;width:55%;background:var(--blue);border-radius:2px"></div></div>
+        </div>
+        <div style="text-align:right;font-family:'IBM Plex Mono',monospace;font-size:13px;font-weight:600;color:var(--navy);white-space:nowrap">24 units</div>
+        <div style="text-align:right;white-space:nowrap"><span style="background:var(--sky);color:var(--blue);font-size:10px;font-weight:600;padding:3px 10px;border-radius:20px;border:1px solid var(--sky-deep)">In stock</span></div>
+      </div>
+
+      <!-- Row: Wire — low -->
+      <div style="display:grid;grid-template-columns:minmax(0,1fr) 110px 100px;padding:16px 24px;border-top:1px solid var(--page);align-items:center;gap:8px;background:#FFFCF4">
+        <div>
+          <div style="font-size:13.5px;font-weight:600;color:var(--navy);margin-bottom:7px;white-space:nowrap">Copper Wire 2.5mm</div>
+          <div style="height:4px;background:var(--page-dim);border-radius:2px"><div style="height:100%;width:3%;background:var(--amber);border-radius:2px"></div></div>
+          <div style="font-size:11px;color:var(--amber-dk);margin-top:5px;font-weight:500;white-space:nowrap">⚠ Reorder soon</div>
+        </div>
+        <div style="text-align:right;font-family:'IBM Plex Mono',monospace;font-size:13px;font-weight:600;color:var(--amber-dk);white-space:nowrap">1 unit</div>
+        <div style="text-align:right;white-space:nowrap"><span style="background:#FEF3DC;color:var(--amber-dk);font-size:10px;font-weight:600;padding:3px 10px;border-radius:20px;border:1px solid #FAD98A">Low stock</span></div>
+      </div>
+
+      <!-- Row: MCB -->
+      <div style="display:grid;grid-template-columns:minmax(0,1fr) 110px 100px;padding:16px 24px;border-top:1px solid var(--page);align-items:center;gap:8px">
+        <div>
+          <div style="font-size:13.5px;font-weight:600;color:var(--navy);margin-bottom:7px;white-space:nowrap">MCB 32 Amp</div>
+          <div style="height:4px;background:var(--page-dim);border-radius:2px"><div style="height:100%;width:92%;background:var(--blue);border-radius:2px"></div></div>
+        </div>
+        <div style="text-align:right;font-family:'IBM Plex Mono',monospace;font-size:13px;font-weight:600;color:var(--navy);white-space:nowrap">112 units</div>
+        <div style="text-align:right;white-space:nowrap"><span style="background:var(--sky);color:var(--blue);font-size:10px;font-weight:600;padding:3px 10px;border-radius:20px;border:1px solid var(--sky-deep)">In stock</span></div>
+      </div>
+
+      <!-- Footer -->
+      <div style="padding:14px 24px;border-top:1px solid var(--line);background:var(--page);display:flex;justify-content:space-between;align-items:center">
+        <span style="font-size:12px;color:var(--ink-soft)">5 items &nbsp;·&nbsp; <span style="color:var(--amber-dk);font-weight:600">2 need attention</span></span>
+        <span style="font-size:12px;color:var(--blue);font-weight:600">+ Add item</span>
+      </div>
     </div>
-    <div>
+
+    <!-- RIGHT: Text + bullets -->
+    <div style="padding-top:8px">
       <div class="story-label reveal">02 — Inventory</div>
       <h2 class="story-h reveal reveal-delay-1">Stock that<br><em>counts itself.</em></h2>
       <p class="story-body reveal reveal-delay-2">Every sale deducts from inventory automatically. When something's running low, BillSnap tells you before your customer does. No spreadsheet, no guesswork.</p>
+
+      <div class="reveal reveal-delay-3" style="margin-top:32px;display:flex;flex-direction:column;gap:20px">
+        <div style="display:flex;align-items:flex-start;gap:14px">
+          <div style="width:30px;height:30px;border-radius:50%;background:var(--sky);border:1px solid var(--sky-deep);display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:2px">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--blue)" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>
+          </div>
+          <div>
+            <div style="font-size:14px;font-weight:600;color:var(--navy);margin-bottom:3px">Auto stock deduction</div>
+            <div style="font-size:13.5px;color:var(--ink-soft);line-height:1.65">Every invoice saved deducts matching items from stock automatically</div>
+          </div>
+        </div>
+        <div style="display:flex;align-items:flex-start;gap:14px">
+          <div style="width:30px;height:30px;border-radius:50%;background:var(--sky);border:1px solid var(--sky-deep);display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:2px">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--blue)" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>
+          </div>
+          <div>
+            <div style="font-size:14px;font-weight:600;color:var(--navy);margin-bottom:3px">Low stock alerts</div>
+            <div style="font-size:13.5px;color:var(--ink-soft);line-height:1.65">Dashboard highlights items running low before you run out</div>
+          </div>
+        </div>
+        <div style="display:flex;align-items:flex-start;gap:14px">
+          <div style="width:30px;height:30px;border-radius:50%;background:var(--sky);border:1px solid var(--sky-deep);display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:2px">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--blue)" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>
+          </div>
+          <div>
+            <div style="font-size:14px;font-weight:600;color:var(--navy);margin-bottom:3px">Separate per company</div>
+            <div style="font-size:13.5px;color:var(--ink-soft);line-height:1.65">Each shop's inventory is fully independent — nothing shared</div>
+          </div>
+        </div>
+      </div>
     </div>
+
   </div>
 </section>
 
