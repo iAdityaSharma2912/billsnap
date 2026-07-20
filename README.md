@@ -1,223 +1,364 @@
+<div align="center">
+
+<img src="https://thebillsnap.vercel.app/og-image.png" alt="BillSnap" width="600"/>
+
 # BillSnap
 
-Offline billing, inventory, and customer management — now a **native
-Windows desktop app** (no browser, no terminals, single installer).
-Originally built as a local web app; see `docs/ARCHITECTURE.md` for the
-full migration story.
+**Free offline billing software for small shops**
 
-No internet, no cloud, no monthly fees — everything runs on the PC it's
-installed on. Each shop/business gets its own separate install with its
-own independent database; nothing is shared between installs.
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+[![Platform](https://img.shields.io/badge/Platform-Windows%2010%20%7C%2011-navy)](https://thebillsnap.vercel.app)
+[![Version](https://img.shields.io/badge/Version-1.0.0-amber)](https://github.com/iAdityaSharma2912/billsnap/releases)
+[![Website](https://img.shields.io/badge/Website-thebillsnap.vercel.app-185FA5)](https://thebillsnap.vercel.app)
 
-## Requirements
+[Download](https://github.com/iAdityaSharma2912/billsnap/releases/latest) · [Website](https://thebillsnap.vercel.app) · [Report a bug](https://github.com/iAdityaSharma2912/billsnap/issues) · [Request a feature](https://github.com/iAdityaSharma2912/billsnap/issues/new)
 
-**To use BillSnap (end users):** nothing — the installer includes
-everything needed. See `docs/INSTALLATION.md` Part C.
+</div>
 
-**To build BillSnap from source (developers):** Python 3.11/3.12,
-Node.js 18+, Rust, and the Tauri CLI. See `docs/INSTALLATION.md` Part A
-for the complete from-scratch setup.
+---
 
-## Quick start (development)
+## What is BillSnap?
 
-```powershell
-# Desktop app (what end users get):
-.\scripts\build-backend.ps1
-cargo tauri dev
+BillSnap is a desktop billing application built for small shops — kirana stores, electronics shops, hardware stores, cloth merchants, and any business that needs to create invoices, track inventory, and see daily sales without relying on the internet or paying a monthly subscription.
 
-# OR plain web app, for faster frontend-only iteration:
+It runs entirely on your own Windows PC. No internet connection required. No account to create. No data ever leaves your machine. Everything — invoices, customers, stock levels, reports — is stored in a single local database file.
+
+---
+
+## Features
+
+- **PDF invoices** — Cash Memo / Delivery Challan format with original and duplicate copies on one A4 sheet, separated by a cut line. Your shop name, address, customer details, item list, grand total, UPI QR code, and bank details all print automatically.
+- **Inventory management** — Add items with selling price, unit, and minimum stock threshold. Stock deducts automatically every time an invoice is saved. Low-stock alerts appear on the dashboard before you run out.
+- **Customer management** — Save customer names, addresses, and phone numbers. Repeat customers fill in automatically when creating invoices.
+- **Daily and monthly reports** — See total sales, top customers, payment mode breakdown (cash, UPI, credit), and a per-item inventory report for any date or month. All reports are printable.
+- **Excel exports** — Export all invoices for any date range to a formatted `.xlsx` file.
+- **One-click backup and restore** — Zips the entire database, all invoice PDFs, and all exports into a single file. Restore on any PC by uploading that zip.
+- **Multiple companies** — Run two or more businesses from one installation, each with its own invoice series, inventory, customers, and reports. Switch between them with a tab click.
+- **100% offline** — Works during power cuts, BSNL outages, or anywhere without internet. No server dependency of any kind.
+- **First-run setup wizard** — Fresh install shows a guided setup to create your first company before unlocking the rest of the app.
+- **Application logs** — All events (invoices created, backups taken, errors) logged to daily rotating files, viewable from Settings → Logs.
+
+---
+
+## Tech stack
+
+BillSnap is a Tauri v1 desktop application. The frontend is a React web app rendered inside a native WebView2 window. The backend is a FastAPI Python application packaged as a PyInstaller sidecar that Tauri spawns automatically on launch.
+
+| Layer | Technology |
+|---|---|
+| Desktop shell | Tauri v1 (Rust) |
+| Frontend | React 18, TypeScript, Vite, Tailwind CSS, Zustand, React Router |
+| Backend | FastAPI, SQLAlchemy 2.0, Pydantic v2, Uvicorn |
+| Database | SQLite (single local file, zero config) |
+| PDF generation | ReportLab |
+| Excel export | openpyxl, pandas |
+| Icons / UI | lucide-react |
+| Packaging | PyInstaller (`--onefile`) |
+| Installer | NSIS + WiX (via Tauri bundler) |
+
+---
+
+## Architecture
+
+```
+BillSnap.exe  (Tauri shell)
+├── WebView2 window  →  React frontend (localhost:8000)
+└── billsnap-backend.exe  (PyInstaller sidecar)
+    └── FastAPI + SQLAlchemy + SQLite
+        └── %APPDATA%\BillSnap\
+            ├── database\smartbill.db
+            ├── invoices\
+            ├── exports\
+            ├── backup\
+            └── logs\
 ```
 
-Open **two terminals** for the web-app route.
+The Rust shell spawns the Python backend sidecar on launch with `BILLSNAP_ENV=production` set, and kills it cleanly when the window closes. The frontend polls `/health` every 400ms until the backend is ready (typically 2-3 seconds), then proceeds normally.
 
-**Terminal 1 — backend:**
-```bash
-cd backend
-python -m venv venv
+In development, you run the backend directly with `uvicorn` and the frontend with `vite dev`. In production, the backend is frozen into a single `.exe` by PyInstaller and the frontend is compiled to static files by Vite, both bundled into the installer by Tauri.
 
-# Windows:
-venv\Scripts\activate
-# macOS/Linux:
-source venv/bin/activate
-
-pip install -r requirements.txt
-uvicorn main:app --reload --port 8000
-```
-Backend is now running at http://localhost:8000 (API docs at `/docs`).
-
-**Terminal 2 — frontend:**
-```bash
-cd frontend
-npm install
-npm run dev
-```
-Open the URL it prints (http://localhost:1420) in your browser.
-
-A fresh database starts with **zero companies** — you'll see a
-"Welcome to BillSnap" setup screen prompting you to create the first
-one. (Earlier versions of this project auto-seeded "Sharma Agency" and
-"Sharma Electricals" — that was removed once each shop started getting
-its own separate install, since hardcoding either company into every
-install would be wrong for one of them. See `docs/ARCHITECTURE.md`.)
+---
 
 ## Project structure
 
 ```
-billsnap/
-├── backend/                  FastAPI + SQLAlchemy + SQLite
-│   ├── main.py                Entry point — uvicorn (dev) or direct exe (packaged)
-│   ├── billsnap-backend.spec  PyInstaller build config (--onefile)
-│   ├── app/
-│   │   ├── api/                Route handlers (customer, invoice, inventory, ...)
-│   │   ├── core/                 paths.py — single source of truth for %APPDATA% locations
-│   │   ├── models/              SQLAlchemy ORM models (7 tables)
-│   │   ├── schemas/             Pydantic request/response schemas
-│   │   ├── repositories/        Data-access layer
-│   │   ├── services/            Business logic (PDF, Excel, backup, invoice)
-│   │   ├── database/            DB engine/session setup
-│   │   └── utils/                Logger, invoice number generator
-│   └── tests/                  pytest test suite
-├── frontend/                  React + TypeScript + Vite + Tailwind
+smartbill/
+├── backend/
+│   ├── main.py                     # FastAPI app entry point
+│   ├── requirements.txt
+│   ├── billsnap-backend.spec       # PyInstaller build config
+│   └── app/
+│       ├── api/                    # Route handlers
+│       │   ├── customer.py
+│       │   ├── invoice.py
+│       │   ├── inventory.py
+│       │   ├── report.py
+│       │   ├── export.py
+│       │   ├── backup.py
+│       │   └── settings_api.py
+│       ├── core/
+│       │   └── paths.py            # %APPDATA% path resolver (dev vs prod)
+│       ├── models/
+│       │   └── models.py           # SQLAlchemy ORM models
+│       ├── schemas/
+│       │   └── schemas.py          # Pydantic request/response schemas
+│       ├── repositories/           # Data access layer
+│       ├── services/               # Business logic
+│       │   ├── invoice_service.py  # Invoice create/edit + stock reconciliation
+│       │   ├── pdf_service.py      # ReportLab PDF generation
+│       │   ├── excel_service.py    # openpyxl export
+│       │   └── backup_service.py   # Zip backup/restore
+│       ├── database/
+│       │   └── db.py               # SQLAlchemy engine + session + migrations
+│       └── utils/
+│           └── logger.py           # Rotating daily log files
+│
+├── frontend/
 │   └── src/
-│       ├── pages/               One file per screen (+ CompanySetup.tsx, first-run wizard)
-│       ├── components/          layout/ invoice/ shared/ settings/
-│       ├── store/                Zustand stores (+ preferencesStore.ts)
-│       ├── services/             axios API clients (+ tauriApi.ts, desktop-only bridge)
-│       ├── hooks/                useDebounce, useKeyboard
-│       └── types/                Shared TypeScript interfaces
-├── src-tauri/                 Rust desktop shell
-│   ├── src/main.rs              Window lifecycle, sidecar spawn/kill
-│   ├── src/sidecar.rs            Backend process management
-│   ├── src/commands.rs           Custom commands callable from React (open folder, get data dir)
-│   ├── tauri.conf.json           Window, icon, installer config
-│   ├── icons/                    App icon (5 formats, generated from Logo.tsx's brand mark)
-│   └── binaries/                 PyInstaller output lands here (gitignored, built locally)
-├── scripts/                   PowerShell build automation
-│   ├── build-backend.ps1        Backend -> PyInstaller -> correctly-named sidecar
-│   └── build-all.ps1            Full pipeline -> finished installer
-├── docs/                      Architecture, schema, troubleshooting, installation guide
-└── README.md                 You are here
+│       ├── pages/                  # One file per screen
+│       │   ├── Dashboard.tsx
+│       │   ├── NewInvoice.tsx
+│       │   ├── InvoiceHistory.tsx
+│       │   ├── Customers.tsx
+│       │   ├── Inventory.tsx
+│       │   ├── Reports.tsx
+│       │   ├── Export.tsx
+│       │   ├── Backup.tsx
+│       │   ├── Settings.tsx
+│       │   └── CompanySetup.tsx    # First-run wizard
+│       ├── components/
+│       │   ├── layout/             # Sidebar, Topbar
+│       │   ├── shared/             # CompanyTabs, Modal, Toast,
+│       │   │                       # BackendReadyGate, CompanySetupGate
+│       │   ├── invoice/            # Invoice form components
+│       │   └── settings/           # CompaniesPanel, SystemPanel
+│       ├── store/                  # Zustand state
+│       │   ├── appStore.ts         # activeCompany, toasts
+│       │   ├── settingsStore.ts    # Company list
+│       │   └── preferencesStore.ts # Notification toggle (localStorage)
+│       ├── services/               # axios API clients
+│       │   ├── api.ts              # Base axios instance
+│       │   ├── invoiceApi.ts
+│       │   ├── inventoryApi.ts
+│       │   ├── customerApi.ts
+│       │   ├── reportApi.ts
+│       │   └── tauriApi.ts         # Desktop-only commands (folder open, notifications)
+│       ├── hooks/
+│       │   ├── useCompanies.ts
+│       │   ├── useDebounce.ts
+│       │   └── useKeyboard.ts
+│       └── types/
+│           └── index.ts
+│
+├── src-tauri/
+│   ├── src/
+│   │   ├── main.rs                 # Window lifecycle, event handlers
+│   │   ├── sidecar.rs              # Backend process spawn/kill (taskkill /IM)
+│   │   └── commands.rs             # Tauri commands: get_app_data_dir, open_folder
+│   ├── icons/                      # App icon in 5 formats
+│   ├── binaries/                   # PyInstaller output (gitignored, built locally)
+│   ├── Cargo.toml
+│   └── tauri.conf.json
+│
+├── scripts/
+│   ├── build-backend.ps1           # PyInstaller → correctly named sidecar binary
+│   └── build-all.ps1               # Full pipeline → finished installer
+│
+├── docs/
+│   ├── INSTALLATION.md
+│   ├── ARCHITECTURE.md
+│   ├── DATABASE_SCHEMA.md
+│   ├── TROUBLESHOOTING.md
+│   └── FUTURE_IMPROVEMENTS.md
+│
+├── index.html                      # Landing page (served via GitHub Pages / Vercel)
+├── og-image.png                    # Open Graph preview image
+├── sitemap.xml
+├── robots.txt
+├── .gitignore
+└── README.md
 ```
 
-## Running the tests
+---
 
-**Backend (pytest):**
-```bash
-cd backend
-source venv/bin/activate   # or venv\Scripts\activate on Windows
-pytest tests/ -v
-```
+## Database
 
-**Frontend (vitest):**
-```bash
-cd frontend
-npm test
-```
+SQLite — single file at `%APPDATA%\BillSnap\database\smartbill.db`.
 
-## Core workflow
-
-1. **Dashboard** — pick a company tab, see today's sales, invoice count,
-   low-stock alerts, and recent invoices.
-2. **New invoice** (`Ctrl+N`) — search or create a customer, type an item
-   name to get instant autocomplete from that company's inventory, fill
-   qty/rate, the total updates live. Typing a brand-new item name (no
-   autocomplete match) automatically adds it to that company's inventory
-   list at zero stock, so it's searchable next time. `Ctrl+S` saves the
-   invoice and generates the PDF in one step — a dialog then offers
-   **Print** and **Download** for that PDF immediately.
-3. **Invoice history** — filter by company/date, click a row to see full
-   line items, and use the **Print** / **Download** buttons there too.
-4. **Customers** — simple CRUD screens with search.
-5. **Inventory** — scoped per company: each company (Sharma Agency, Sharma
-   Electricals, or any company you add later) has its own independent item
-   list and stock numbers. Switch companies with the tabs at the top. Rows
-   under their minimum stock are highlighted in red.
-6. **Reports** — daily and monthly breakdowns: totals, top customers, top
-   items, payment-mode split.
-7. **Export** (`Ctrl+E`) — generates a formatted `.xlsx` with bold headers,
-   auto column widths, and filters enabled, saved under `backend/exports/`.
-8. **Backup** (`Ctrl+B`) — zips the database, all invoice PDFs, exports, and
-   settings into one file and **downloads it straight to your computer**.
-   To restore, click **Browse & restore ZIP file** and pick any previously
-   downloaded backup ZIP from your computer — no server-side filename
-   needed.
-9. **Settings** — has three tabs:
-   - **Companies**: add a brand-new company (short code + name + address +
-     phone + UPI/bank details), or click an existing company to edit its
-     details. Deleting a company is blocked if it already has invoices.
-   - **Logs**: a live viewer of recent application log entries.
-   - **System** (desktop app only): toggle low-stock desktop notifications,
-     view/open the app's data folder, and see the app version.
-
-## Adding a new company
-
-Go to **Settings → Companies → Add company**. Give it a short code (used
-in invoice numbers, e.g. `GS` → invoices like `GS-20260624-001`) and a
-name. It immediately appears as a new tab everywhere — Dashboard,
-Inventory, New invoice, Export — with its own independent inventory and
-invoice numbering, no restart needed.
-
-## Keyboard shortcuts
-
-| Shortcut | Action |
+| Table | Purpose |
 |---|---|
-| `Ctrl+N` | New invoice (from anywhere) |
-| `Ctrl+S` | Save invoice + generate PDF |
-| `Ctrl+E` | Open export screen |
-| `Ctrl+B` | Create & download backup now |
-| `Enter` (in item row) | Add the current line item |
-| `Esc` | Close the open modal |
+| `settings` | Company profiles (name, address, phone, UPI, bank details) |
+| `customers` | Customer records |
+| `inventory` | Items with price, unit, stock, and minimum threshold |
+| `invoices` | Invoice headers |
+| `invoice_items` | Line items per invoice (with stock-deducted flag) |
+| `users` | User accounts (schema present, auth not yet wired) |
+| `app_logs` | Application event log |
 
-## Where files end up
+Schema migrations are handled by a lightweight custom runner in `db.py` (`_run_column_migrations`) — adds missing columns on startup without touching existing data. Safe to run on every launch.
 
-**Desktop app:** everything lives under `%APPDATA%\BillSnap\`
-(production) or `%APPDATA%\BillSnap-Dev\` (development) — see
-`backend/app/core/paths.py` for the exact resolution logic, or
-Settings → System → "Open data folder" in the running app.
-- Database: `%APPDATA%\BillSnap\database\smartbill.db`
-- Invoice PDFs: `%APPDATA%\BillSnap\invoices\<year>\<month>\<INVOICE-NUMBER>.pdf`
-- Excel exports: `%APPDATA%\BillSnap\exports\<year>\<month>\Invoices-Export-*.xlsx`
-- Backups: `%APPDATA%\BillSnap\backup\BillSnap-Backup-<date>.zip`
-- Logs: `%APPDATA%\BillSnap\logs\<date>.log`, auto-archived after 30 days
+---
 
-**Web-app dev mode** (running `uvicorn` directly, not through the
-desktop shell): same structure, but under your OS's equivalent app-data
-folder with a `-Dev` suffix (e.g. `~/.local/share/BillSnap-Dev/` on
-Linux) — kept separate from production data so testing never risks
-overwriting real shop data.
+## Getting started
+
+### Prerequisites
+
+| Tool | Version | Purpose |
+|---|---|---|
+| Python | 3.11 or 3.12 | Backend runtime |
+| Node.js | 18+ | Frontend build |
+| Rust | stable | Tauri shell compilation |
+| VS Build Tools | Desktop C++ workload | Rust linker on Windows |
+| Tauri CLI | v1.x | `cargo install tauri-cli --version "^1"` |
+
+### Development setup
+
+**1. Clone the repo**
+```bash
+git clone https://github.com/iAdityaSharma2912/billsnap.git
+cd billsnap
+```
+
+**2. Backend**
+```powershell
+cd backend
+python -m venv venv
+.\venv\Scripts\Activate.ps1
+pip install -r requirements.txt
+```
+
+**3. Frontend**
+```powershell
+cd ..\frontend
+npm install
+```
+
+**4. Run in web mode** (fastest for frontend iteration)
+
+Terminal 1:
+```powershell
+cd backend
+.\venv\Scripts\Activate.ps1
+uvicorn main:app --reload --port 8000
+```
+
+Terminal 2:
+```powershell
+cd frontend
+npm run dev
+```
+
+Open `http://localhost:1420` — you'll see BillSnap's first-run setup screen.
+
+**5. Run as a desktop app**
+```powershell
+# From project root
+.\scripts\build-backend.ps1   # packages backend into PyInstaller sidecar
+cargo tauri dev               # compiles Rust shell + opens native window
+```
+
+### Building the installer
+
+```powershell
+.\scripts\build-all.ps1
+```
+
+Output:
+```
+src-tauri\target\release\bundle\nsis\BillSnap_1.0.0_x64-setup.exe
+src-tauri\target\release\bundle\msi\BillSnap_1.0.0_x64_en-US.msi
+```
+
+---
 
 ## API reference
 
-Once the backend is running, open **http://localhost:8000/docs** for the
-full interactive Swagger UI covering every endpoint (customer, invoice,
-inventory, report, export, backup, settings/companies).
+Start the backend and open `http://localhost:8000/docs` for the full interactive Swagger UI.
 
-## Desktop packaging
+| Prefix | Description |
+|---|---|
+| `GET /health` | Health check — returns `{"status":"healthy"}` |
+| `/customer/*` | CRUD for customer records |
+| `/invoice/*` | Create, list, update, delete invoices + PDF download |
+| `/inventory/*` | Item management, stock list, low-stock endpoint |
+| `/report/*` | Daily report, monthly report, inventory report |
+| `/export/*` | Excel export generation and download |
+| `/backup/*` | Create backup zip, list backups, restore |
+| `/settings/*` | Company CRUD, application logs |
 
-This project ships as a Tauri-based Windows desktop app — see
-`docs/ARCHITECTURE.md` for the full system design and
-`docs/INSTALLATION.md` for build/install instructions. The backend
-(FastAPI) is packaged with PyInstaller into a sidecar executable that
-Tauri's Rust shell spawns and manages automatically; the frontend
-(React) is built as static files and rendered in a native WebView2
-window. No browser, no manual server startup, no terminals for the end
-user.
+---
 
-## Documentation
+## Key design decisions
 
-- `docs/INSTALLATION.md` — complete from-scratch setup, build, and shop-PC install guide
-- `docs/ARCHITECTURE.md` — system diagram and what changed in the web-to-desktop migration
-- `docs/DATABASE_SCHEMA.md` — table structure, ER diagram, migration approach
-- `docs/DEVELOPER_GUIDE.md` — codebase patterns, how to add a new field/module, stock reconciliation logic
-- `docs/USER_MANUAL.md` — day-to-day usage guide for billing staff and shop owners
-- `docs/TROUBLESHOOTING.md` — known failure modes and fixes
-- `docs/FUTURE_IMPROVEMENTS.md` — known gaps and suggested next steps
+**`--onefile` PyInstaller packaging over `--onedir`** — Tauri's `externalBin` sidecar mechanism manages a single named executable file. Using `--onedir` produces a binary plus a `_internal/` support folder that Tauri can't automatically relocate alongside the binary during bundling. `--onefile` embeds everything into one self-contained executable, which fits Tauri's contract exactly.
 
-## Notes on scope
+**`taskkill /F /IM billsnap-backend.exe /T` for process cleanup** — Tauri's `CommandChild.kill()` targets the PyInstaller bootloader PID, not the uvicorn worker PID it spawns internally. The bootloader exits cleanly but uvicorn keeps running, holding port 8000 open. Killing by image name with `/T` (kill process tree) terminates the entire chain correctly.
 
-This build implements every module from the plan except the Tally import
-column-mapping backend (the UI screen and file picker exist at
-`/import`; wiring it to a `/import/*` API with fuzzy match-and-preview logic
-is straightforward to add following the same repository/service pattern
-used for customers and inventory, but was left as a stub since it depends on
-a sample Tally export file to map columns against correctly).
+**Pre-spawn cleanup in `spawn_backend()`** — Before spawning a new backend, the sidecar module calls `taskkill` to kill any stray `billsnap-backend.exe` from a previous session that may have survived. This makes every fresh launch self-healing rather than colliding with an orphaned process.
+
+**`BackendReadyGate` with per-attempt 1.5s timeout** — The shared axios instance has a 15s timeout, which would burn almost the entire polling budget (45s) in just 2-3 retries. The gate uses native `fetch()` with its own 1.5s `AbortController` timeout instead, allowing ~30 retry attempts within the budget on a slow PC.
+
+**`CompanySetupGate` before the routed app** — A fresh install has zero company rows. Rather than let each page handle "no company" as an edge case, a single gate component detects this and shows the setup wizard before mounting any routes. After company creation, the gate falls through automatically — no page reload needed.
+
+**Relative PDF paths stored in the database** — `Invoice.pdf_path` is stored relative to `APP_DATA_DIR` (e.g. `invoices/2026/July/SA-001.pdf`) rather than as an absolute path. This survives PC migrations, user renames, and OneDrive sync folder moves — the path is resolved at read time by joining with the current `APP_DATA_DIR`.
+
+---
+
+## Environment
+
+| Variable | Value | Effect |
+|---|---|---|
+| `BILLSNAP_ENV` | `production` | Data written to `%APPDATA%\BillSnap\` |
+| `BILLSNAP_ENV` | *(absent)* | Data written to `%APPDATA%\BillSnap-Dev\` |
+
+Tauri sets `BILLSNAP_ENV=production` before spawning the sidecar. Running `uvicorn` directly in a terminal (no variable set) uses `BillSnap-Dev` — so dev and production data can never collide, even on the same machine.
+
+---
+
+## Contributing
+
+Issues and pull requests are welcome. For significant changes, please open an issue first to discuss what you'd like to change.
+
+```bash
+# Run backend tests
+cd backend && pytest
+
+# Run frontend type check
+cd frontend && npx tsc --noEmit
+
+# Run frontend tests
+cd frontend && npm test
+```
+
+---
+
+## Roadmap
+
+- [ ] GST Tax Invoice format (GSTIN, HSN codes, tax breakdown)
+- [ ] Code signing (removes Windows SmartScreen warning)
+- [ ] Auto-update mechanism via Tauri updater plugin
+- [ ] Hindi language support
+- [ ] Scheduled automatic backups
+- [ ] Thermal printer support (58mm / 80mm receipt printers)
+
+---
+
+## License
+
+MIT — see [LICENSE](LICENSE) for full text.
+
+You can use BillSnap for any purpose, including commercial use. The only requirement is keeping the MIT License notice intact in any copies or derivative works.
+
+---
+
+## Built by
+
+**Aditya Sharma**
+
+[Portfolio](https://iaddy29.vercel.app) · [Twitter](https://twitter.com/iaddy29) · [Instagram](https://www.instagram.com/iaddy29/)
+
+---
+
+<div align="center">
+  <sub>Made in India 🇮🇳 · Free forever · Your data never leaves your PC</sub>
+</div>
