@@ -1,0 +1,75 @@
+{
+  "$schema": "https://raw.githubusercontent.com/tauri-apps/tauri/dev/core/tauri-config-schema/schema.json",
+  "build": {
+    "beforeDevCommand": "",
+    "beforeBuildCommand": "powershell -Command \"cd ../frontend; npm run build\"",
+    "devPath": "http://localhost:1420",
+    "distDir": "../frontend/dist",
+    "withGlobalTauri": false
+},
+  "package": {
+    "productName": "BillSnap",
+    "version": "1.0.0"
+  },
+  "tauri": {
+    "bundle": {
+      "active": true,
+      "identifier": "com.billsnap.app",
+      "icon": [
+        "icons/32x32.png",
+        "icons/128x128.png",
+        "icons/128x128@2x.png",
+        "icons/icon.icns",
+        "icons/icon.ico"
+      ],
+      "resources": [],
+      "externalBin": [
+        "binaries/billsnap-backend"
+      ],
+      "windows": {
+        "wix": {
+          "language": "en-US"
+        },
+        "nsis": {
+          "installMode": "perMachine",
+          "languages": ["English"]
+        }
+      },
+      "targets": ["msi", "nsis"]
+    },
+    "security": {
+      "csp": null
+    },
+    "windows": [
+      {
+        "title": "BillSnap",
+        "width": 1280,
+        "height": 800,
+        "minWidth": 1024,
+        "minHeight": 680,
+        "resizable": true,
+        "fullscreen": false,
+        "center": true,
+        "url": "index.html"
+      }
+    ],
+    "allowlist": {
+      "shell": {
+        "open": false,
+        "sidecar": true,
+        "scope": [
+          {
+            "name": "binaries/billsnap-backend",
+            "sidecar": true
+          }
+        ]
+      },
+      "notification": {
+        "all": true
+      },
+      "path": {
+        "all": true
+      }
+    }
+  }
+}

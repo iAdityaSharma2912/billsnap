@@ -1,0 +1,26 @@
+[package]
+name = "billsnap"
+version = "1.0.0"
+description = "BillSnap — offline billing & inventory management"
+edition = "2021"
+
+# This is a plain desktop binary crate — no [lib] section, because there
+# is no separate library code here for another crate (or a mobile
+# platform target) to link against. main.rs IS the whole program;
+# sidecar.rs is a module of it (`mod sidecar;` in main.rs), not a
+# separate crate. If mobile targets are ever added later, that's when a
+# lib.rs + [lib] section would become necessary — not before.
+build = "build.rs"
+
+[build-dependencies]
+tauri-build = { version = "1", features = [] }
+
+[dependencies]
+tauri = { version = "1", features = [ "path-all", "notification-all", "shell-sidecar"] }
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+
+[features]
+# This feature is automatically enabled by `tauri dev` when running with
+# `cargo run`, providing a debug build. Don't change this lightly.
+custom-protocol = ["tauri/custom-protocol"]
