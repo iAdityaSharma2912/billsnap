@@ -159,26 +159,26 @@ def _build_copy_flowables(invoice, customer, settings, items, copy_label: str):
         fontName="Helvetica-Bold", alignment=TA_CENTER, leading=13,
     )
     sub_style = ParagraphStyle(
-        "sub", fontSize=8.5, textColor=GRAY_700, leading=11,
+        "sub", fontSize=9.5, textColor=GRAY_700, leading=12,
     )
     label_style = ParagraphStyle(
-        "label", fontSize=7.5, textColor=GRAY_300, leading=10,
+        "label", fontSize=9, textColor=GRAY_300, leading=11,
     )
     copy_label_style = ParagraphStyle(
         "copylabel", fontSize=8, textColor=BLUE_600,
         fontName="Helvetica-Bold", alignment=TA_RIGHT,
     )
     customer_name_style = ParagraphStyle(
-        "customername", fontSize=15, textColor=GRAY_700,
-        fontName="Helvetica-Bold", leading=18,
+        "customername", fontSize=18, textColor=GRAY_700,
+        fontName="Helvetica-Bold", leading=21,
     )
     sig_label_style = ParagraphStyle(
-        "siglabel", fontSize=7.5, textColor=GRAY_700,
-        alignment=TA_CENTER, leading=10,
+        "siglabel", fontSize=9, textColor=GRAY_700,
+        alignment=TA_CENTER, leading=11,
     )
     meta_style = ParagraphStyle(
-        "meta", fontSize=8.5, textColor=GRAY_700,
-        alignment=TA_RIGHT, leading=11,
+        "meta", fontSize=9.5, textColor=GRAY_700,
+        alignment=TA_RIGHT, leading=12,
     )
 
     # ── Copy label ────────────────────────────────────────────────────
@@ -230,7 +230,7 @@ def _build_copy_flowables(invoice, customer, settings, items, copy_label: str):
         ("BACKGROUND",    (0,  0), (-1,  0), BLUE_50),
         ("TEXTCOLOR",     (0,  0), (-1,  0), BLUE_900),
         ("FONTNAME",      (0,  0), (-1,  0), "Helvetica-Bold"),
-        ("FONTSIZE",      (0,  0), (-1, -1), 8.5),
+        ("FONTSIZE",      (0,  0), (-1, -1), 9.5),
         ("ALIGN",         (2,  0), (-1, -1), "RIGHT"),
         ("ALIGN",         (0,  0), ( 1, -1), "LEFT"),
         ("GRID",          (0,  0), (-1, -1), 0.4, GRAY_300),
@@ -266,7 +266,7 @@ def _build_copy_flowables(invoice, customer, settings, items, copy_label: str):
     # ── Payment block ─────────────────────────────────────────────────
     if settings.show_payment_block and (settings.upi_id or settings.bank_details):
         qr_img = _qr_image(settings.upi_id, invoice.grand_total) if settings.upi_id else None
-        pay_style = ParagraphStyle("paysub", parent=sub_style, fontSize=7, leading=9)
+        pay_style = ParagraphStyle("paysub", parent=sub_style, fontSize=8, leading=10)
         pay_row = [
             qr_img if qr_img else Paragraph("", sub_style),
             Paragraph(
@@ -300,12 +300,12 @@ def _build_copy_flowables(invoice, customer, settings, items, copy_label: str):
         ], [
             Paragraph(
                 f"{customer.name}<br/>"
-                f"<font size=6.5 color='#B4B2A9'>Customer Signature</font>",
+                f"<font size=8 color='#B4B2A9'>Customer Signature</font>",
                 sig_label_style,
             ),
             Paragraph(
                 f"{settings.company_name}<br/>"
-                f"<font size=6.5 color='#B4B2A9'>Authorised Signatory</font>",
+                f"<font size=8 color='#B4B2A9'>Authorised Signatory</font>",
                 sig_label_style,
             ),
         ]],
@@ -324,7 +324,7 @@ def _build_copy_flowables(invoice, customer, settings, items, copy_label: str):
         f"Thank you for your business · {settings.company_name}",
         ParagraphStyle(
             "footer", parent=sub_style, alignment=TA_CENTER,
-            textColor=GRAY_300, fontSize=7,
+            textColor=GRAY_300, fontSize=8,
         ),
     ))
 
