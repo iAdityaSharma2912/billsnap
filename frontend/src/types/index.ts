@@ -9,7 +9,7 @@ export type PaymentMode = 'Cash' | 'Credit' | 'UPI' | 'Bank transfer' | 'Cheque'
 export interface Customer {
   id: number
   name: string
-  phone: string
+  phone?: string
   address?: string
   email?: string | null
   notes?: string | null

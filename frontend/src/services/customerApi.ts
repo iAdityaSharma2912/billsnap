@@ -8,7 +8,7 @@ export const customerApi = {
   get: (id: number) =>
     api.get<CustomerDetail>(`/customer/${id}`).then((r) => r.data),
 
-  create: (data: { name: string; phone: string; address?: string; email?: string; notes?: string }) =>
+  create: (data: { name: string; phone?: string; address?: string; email?: string; notes?: string }) =>
     api.post<Customer>('/customer/create', data).then((r) => r.data),
 
   update: (id: number, data: Partial<Customer>) =>

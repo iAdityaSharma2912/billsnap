@@ -10,7 +10,7 @@ from pydantic import BaseModel, ConfigDict, Field
 
 class CustomerCreate(BaseModel):
     name: str
-    phone: str
+    phone: Optional[str] = ""
     address: Optional[str] = ""
     email: Optional[str] = None
     notes: Optional[str] = None
@@ -28,7 +28,7 @@ class CustomerOut(BaseModel):
     model_config = ConfigDict(from_attributes=True)
     id: int
     name: str
-    phone: str
+    phone: Optional[str] = ""
     address: Optional[str] = ""
     email: Optional[str] = None
     notes: Optional[str] = None

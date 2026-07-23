@@ -53,11 +53,11 @@ export function InvoiceForm() {
   }, [editId]) // eslint-disable-line react-hooks/exhaustive-deps
 
   function handleSelectCustomer(c: Customer) {
-    setCustomer(c.id, c.name, c.phone, c.address ?? '')
+    setCustomer(c.id, c.name, c.phone ?? '', c.address ?? '')
   }
 
   function handleCreatedCustomer(c: Customer) {
-    setCustomer(c.id, c.name, c.phone, c.address ?? '')
+    setCustomer(c.id, c.name, c.phone ?? '', c.address ?? '')
     setNewCustomerOpen(false)
     pushToast(`Customer "${c.name}" created`, 'success')
   }

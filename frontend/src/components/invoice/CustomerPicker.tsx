@@ -21,18 +21,13 @@ export function CustomerPicker({ value, onSelect, onCreateNew }: CustomerPickerP
   useEffect(() => setQuery(value), [value])
 
   useEffect(() => {
-    if (debounced.trim().length < 1) {
-      setResults([])
-      return
-    }
+    if (debounced.trim().length < 1) { setResults([]); return }
     customerApi.list(debounced).then(setResults).catch(() => setResults([]))
   }, [debounced])
 
   useEffect(() => {
     function onClickOutside(e: MouseEvent) {
-      if (wrapperRef.current && !wrapperRef.current.contains(e.target as Node)) {
-        setOpen(false)
-      }
+      if (wrapperRef.current && !wrapperRef.current.contains(e.target as Node)) setOpen(false)
     }
     document.addEventListener('mousedown', onClickOutside)
     return () => document.removeEventListener('mousedown', onClickOutside)
@@ -44,10 +39,7 @@ export function CustomerPicker({ value, onSelect, onCreateNew }: CustomerPickerP
         <Search className="absolute left-2.5 h-3.5 w-3.5 text-gray-300" />
         <input
           value={query}
-          onChange={(e) => {
-            setQuery(e.target.value)
-            setOpen(true)
-          }}
+          onChange={(e) => { setQuery(e.target.value); setOpen(true) }}
           onFocus={() => setOpen(true)}
           placeholder="Search customer by name or phone..."
           className="h-[34px] w-full rounded-md border border-gray-100 bg-white pl-8 pr-3 text-[13px] outline-none focus:border-blue-400 focus:ring-1 focus:ring-blue-100"
@@ -58,21 +50,15 @@ export function CustomerPicker({ value, onSelect, onCreateNew }: CustomerPickerP
           {results.map((c) => (
             <button
               key={c.id}
-              onMouseDown={() => {
-                onSelect(c)
-                setOpen(false)
-              }}
+              onMouseDown={() => { onSelect(c); setOpen(false) }}
               className="flex w-full items-center justify-between px-3 py-2 text-left text-[12px] hover:bg-blue-50"
             >
               <span className="font-medium text-gray-900">{c.name}</span>
-              <span className="text-gray-300">{c.phone}</span>
+              <span className="text-gray-300">{c.phone || '—'}</span>
             </button>
           ))}
           <button
-            onMouseDown={() => {
-              onCreateNew(query)
-              setOpen(false)
-            }}
+            onMouseDown={() => { onCreateNew(query); setOpen(false) }}
             className="flex w-full items-center gap-1.5 border-t border-gray-50 px-3 py-2 text-left text-[12px] text-blue-600 hover:bg-blue-50"
           >
             + Create new customer "{query}"
@@ -98,26 +84,22 @@ export function NewCustomerModal({ open, initialName, onClose, onCreated }: NewC
   const [error, setError] = useState('')
 
   useEffect(() => {
-    if (open) {
-      setName(initialName)
-      setPhone('')
-      setAddress('')
-      setError('')
-    }
+    if (open) { setName(initialName); setPhone(''); setAddress(''); setError('') }
   }, [open, initialName])
 
   async function handleSave() {
-    if (!name.trim() || !phone.trim()) {
-      setError('Name and phone are required')
-      return
-    }
-    setSaving(true)
-    setError('')
+    if (!name.trim()) { setError('Customer name is required'); return }
+    setSaving(true); setError('')
     try {
-      const customer = await customerApi.create({ name: name.trim(), phone: phone.trim(), address })
+      const customer = await customerApi.create({
+        name: name.trim(),
+        phone: phone.trim(),   // phone is now optional — empty string is fine
+        address,
+      })
       onCreated(customer)
     } catch (e: any) {
-      setError(e.message || 'Failed to create customer')
+      // Surface the actual backend error message, not just "Network Error"
+      setError(e.response?.data?.detail || e.message || 'Failed to create customer')
     } finally {
       setSaving(false)
     }
@@ -150,14 +132,16 @@ export function NewCustomerModal({ open, initialName, onClose, onCreated }: NewC
           <input
             value={name}
             onChange={(e) => setName(e.target.value)}
+            autoFocus
             className="h-[34px] w-full rounded-md border border-gray-100 px-3 text-[13px] focus:border-blue-400 focus:outline-none"
           />
         </div>
         <div>
-          <label className="mb-1 block text-[11px] font-medium text-gray-500">Phone *</label>
+          <label className="mb-1 block text-[11px] font-medium text-gray-500">Phone</label>
           <input
             value={phone}
             onChange={(e) => setPhone(e.target.value)}
+            placeholder="Optional"
             className="h-[34px] w-full rounded-md border border-gray-100 px-3 text-[13px] focus:border-blue-400 focus:outline-none"
           />
         </div>

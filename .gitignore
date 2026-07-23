@@ -1,0 +1,31 @@
+﻿# Python
+backend/venv/
+backend/__pycache__/
+backend/app/**/__pycache__/
+backend/build/
+backend/dist/
+*.pyc
+
+# Node
+frontend/node_modules/
+frontend/dist/
+
+# Rust / Tauri
+src-tauri/target/
+
+# PyInstaller sidecar binary (built locally, not committed)
+src-tauri/binaries/
+
+# Database and generated files
+backend/database/*.db
+backend/invoices/
+backend/exports/
+backend/backup/
+backend/logs/
+
+# OS
+.DS_Store
+Thumbs.db
+
+frontend/tsconfig.tsbuildinfo
+frontend/tsconfig.node.tsbuildinfo
