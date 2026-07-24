@@ -248,6 +248,20 @@ def _build_copy_flowables(invoice, customer, settings, items,
             f"{amount:,.2f}",
         ])
 
+    # Totals row — spans # and Item columns, shows total qty and total amount
+    total_qty    = sum(it.qty for it in items)
+    total_amount = sum(round(it.qty * it.rate, 2) for it in items)
+    table_data.append([
+        "",
+        Paragraph("<b>Total</b>", ParagraphStyle("tot", fontSize=9.5, fontName="Helvetica-Bold", textColor=BLUE_900, leading=12)),
+        f"{total_qty:g}",
+        "",
+        "",
+        f"{total_amount:,.2f}",
+    ])
+
+    n_items = len(items)   # number of data rows (excluding header and totals)
+
     items_table = Table(
         table_data,
         colWidths=[7 * mm, 80 * mm, 16 * mm, 16 * mm, 26 * mm, 33 * mm],
@@ -263,11 +277,16 @@ def _build_copy_flowables(invoice, customer, settings, items,
         ("ALIGN",         (2,  0), (-1, -1), "RIGHT"),    # numbers right
         ("VALIGN",        (0,  0), (-1, -1), "TOP"),      # top-align all
         ("GRID",          (0,  0), (-1, -1), 0.4, GRAY_300),
-        ("ROWBACKGROUNDS",(0,  1), (-1, -1), [colors.white, GRAY_50]),
+        ("ROWBACKGROUNDS",(0,  1), (-1, -2), [colors.white, GRAY_50]),
         ("TOPPADDING",    (0,  0), (-1, -1), 3),
         ("BOTTOMPADDING", (0,  0), (-1, -1), 3),
         ("LEFTPADDING",   (0,  0), (-1, -1), 3),
         ("RIGHTPADDING",  (0,  0), (-1, -1), 3),
+        # Totals row styling — last row
+        ("BACKGROUND",    (0, -1), (-1, -1), BLUE_50),
+        ("TEXTCOLOR",     (0, -1), (-1, -1), BLUE_900),
+        ("FONTNAME",      (0, -1), (-1, -1), "Helvetica-Bold"),
+        ("LINEABOVE",     (0, -1), (-1, -1), 0.6, BLUE_600),
     ]))
     flowables.append(items_table)
     flowables.append(Spacer(1, 2 * mm))
